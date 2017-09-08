@@ -31,6 +31,7 @@ Remember with all these UI's they can be Moved, Enabled, Disabled, or even restr
 
 [img]https://imgur.com/oy5WRlG.png[/img]
 
+I look forward to everyone feedback, and I welcome ideas for more UI's that I can add.
 
 [b][size=24pt]INSTALLATION[/size][/b]
 [hr]
