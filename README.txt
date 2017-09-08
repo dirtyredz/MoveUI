@@ -4,6 +4,7 @@
 A mod designed for custom UI elements to be displayed on the players screen, and give them the ability to move those UI's around on thier screen.
 
 The best way to show off this mod is with a video so here ya go:
+
 [youtube]https://www.youtube.com/watch?v=YGAwFltwAsE&feature=youtu.be[/youtube]
 [hr]
 
@@ -12,18 +13,24 @@ Heres also a couple picture of the current UI's I have available:
 [center][b][size=25pt]CargoNotifier[/size][/b][/center]
 Tired of getting stopped by the local faction because you forgot you had that suspicious cargo left in your hold?
 Well no more, for this UI will display 4 separate alerts when carrying: Illegal, Suspicious, Dangerous, or Stolen Cargo.
-[img]http://imgur.com/UyQU5y2.png[/img]
+
+[img]http://imgur.com/L3vK83V.png[/img]
 
 [center][b][size=25pt]DistCore[/size][/b][/center]
 This UI will display how far you are from the core of the galaxy.
-[img]http://imgur.com/UyQU5y2.png[/img]
+
+[img]http://imgur.com/HOwmJjF.png[/img]
 
 [center][b][size=25pt]ResourcesUI[/size][/b][/center]
 Tired of being frustrated that you cant see your resources all the time anymore?
 Well this UI is for you, It will display credits and resources on your screen at all times.
-[img]http://imgur.com/UyQU5y2.png[/img]
+
+[img]http://imgur.com/w7rYjMM.png[/img]
 
 Remember with all these UI's they can be Moved, Enabled, Disabled, or even restricted to specific situations (coding skill required)
+
+[img]https://imgur.com/oy5WRlG.png[/img]
+
 
 [b][size=24pt]INSTALLATION[/size][/b]
 [hr]
