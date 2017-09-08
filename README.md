@@ -84,6 +84,10 @@ __Reganerative Asteroid Fields__
 -Regenerates designated sectors, and randomly appearing sectors, of minable asteroids.
 http://www.avorion.net/forum/index.php/topic,3055.0.html
 
+__MoveUI__
+-A mod for adding custom UIs to the screen.
+http://www.avorion.net/forum/index.php/topic,3834.0.html
+
 __Subspace Corridor__
 -A modders recources, designed to mimick /teleport, due to server commands not being available through the api.
 http://www.avorion.net/forum/index.php/topic,3148.0.html

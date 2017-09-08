@@ -84,7 +84,7 @@ http://www.avorion.net/forum/index.php/topic,3055.0.html
 
 [b]MoveUI[/b]
 -A mod for adding custom UIs to the screen.
-http://www.avorion.net/forum/index.php/topic,3055.0.html
+http://www.avorion.net/forum/index.php/topic,3834.0.html
 
 [b]Subspace Corridor[/b]
 -A modders recources, designed to mimick /teleport, due to server commands not being available through the api.
