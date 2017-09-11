@@ -22,11 +22,11 @@ function onPreRenderHud()
   local resources = {Player():getResources()}
 
   drawTextRect('Credits', HSplit:partition(0),-1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
-  drawTextRect(Player().money, HSplit:partition(0),1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
+  drawTextRect(MoveUI.NicerNumbers(Player().money), HSplit:partition(0),1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
 
   for i = 0, 6 do
     drawTextRect(Material(i).name, HSplit:partition(i+1),-1, 0,Material(i).color, 15, 0, 0, 0)
-    drawTextRect(resources[i+1], HSplit:partition(i+1),1, 0,Material(i).color, 15, 0, 0, 0)
+    drawTextRect(MoveUI.NicerNumbers(resources[i+1]), HSplit:partition(i+1),1, 0,Material(i).color, 15, 0, 0, 0)
   end
 
 
