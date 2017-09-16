@@ -27,6 +27,22 @@ Well this UI is for you, It will display credits and resources on your screen at
 
 [img]http://imgur.com/w7rYjMM.png[/img]
 
+[center][b][size=25pt]ScrapyardLicenses[/size][/b][/center]
+This UI will show all ScrapyardLicenses that are currently active.
+The UI will only countdown on Loaded Sectors.
+It will aslo change colors depending on time remaining.
+
+[img]http://imgur.com/R26PXPS.png[/img]
+
+ScrapyardLicenses UI also has the ability to click one of the lines to show that sector on the galaxy map.
+[img]http://imgur.com/SYqJIAy.png[/img]
+
+SPECIAL THANKS AND CREDIT: dnightmare
+For his original idea, and work. He started this idea while working on: http://www.avorion.net/forum/index.php/topic,3850.0.html
+He continued to work with me on the best approach to make this UI possible.
+Thxs again!!
+
+
 Remember with all these UI's they can be Moved, Enabled, Disabled, or even restricted to specific situations (coding skill required)
 
 [img]https://imgur.com/oy5WRlG.png[/img]
@@ -37,10 +53,19 @@ I look forward to everyone feedback, and I welcome ideas for more UI's that I ca
 [hr]
 1. Download the zip file
 2. Drag and Drop the contents into the /Avorion/ directory,
-All files are inside their own /mods/ directory except for ONE file.
-server.lua needs to be altered to load the initial player file.
+
+All files are inside their own /mods/ directory except for Two file.
+server.lua,
+scrapyard.lua
+
 IF YOU HAVE AN ALTERED SERVER.LUA DO NOT COPY THIS FILE OVER
 you'll want to open the file and copy over the ONE LINE over to your server.lua
+
+scrapyard.lua has only ONE line added to the vanilla file at the bottom.
+you can either copy the file over OR place this one line at the bottom of the file.
+
+    [code]if not pcall(require, 'mods.MoveUI.scripts.entity.merchants.scrapyard') then print('Mod: MoveUI, failed to extend scrapyard.lua!') end[/code]
+
 
 [b][size=24pt]Note[/size][/b]
 [hr]
@@ -50,12 +75,20 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip]MoveUI v1.0.0[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/1.1.0/MoveUI.v1.1.0.zip]MoveUI v1.1.0[/url]
 
+Older Downloads
+[spoiler]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip]MoveUI v1.0.0[/url]
+[/spoiler]
 
 [b][size=24pt]Changelog[/size][/b]
 [hr]
-
+1.1.0
+  -Added ScrapyardLicenses
+      Special Thxs to dnightmare, for working with me and collaborating on how to get this to work.
+  -ResourceUI now had valid currency format
+      Special Thxs to dnightmare, for adding this in.
 
 [b][size=24pt]GITHUB[/size][/b]
 [hr]
