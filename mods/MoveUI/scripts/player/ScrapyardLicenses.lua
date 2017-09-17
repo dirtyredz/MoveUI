@@ -44,7 +44,13 @@ function ScrapyardLicenses.onPreRenderHud()
         --get the licenses
         local player = Player()
         local playerShip = Entity(player.craftIndex)
-        local ShipFaction = playerShip.factionIndex
+        
+        local ShipFaction
+        if playerShip then
+          ShipFaction = playerShip.factionIndex
+        else
+          ShipFaction = player.index
+        end
 
         ScrapyardLicenses.GetFactionValues(ShipFaction)
         ScrapyardLicenses.sync()
@@ -119,7 +125,13 @@ end
 function ScrapyardLicenses.onSectorEntered(playerIndex,x,y)
   local player = Player()
   local playerShip = Entity(player.craftIndex)
-  local ShipFaction = playerShip.factionIndex
+
+  local ShipFaction
+  if playerShip then
+    ShipFaction = playerShip.factionIndex
+  else
+    ShipFaction = player.index
+  end
 
   ScrapyardLicenses.GetFactionValues(ShipFaction)
   ScrapyardLicenses.sync()
