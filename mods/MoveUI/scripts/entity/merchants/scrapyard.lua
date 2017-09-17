@@ -6,21 +6,22 @@ function Scrapyard.updateServer(timeStep)
 
     Data = Scrapyard.secure()
     licenses = Data["licenses"]
+    --local licenses = {}
 
     local x,y = Sector():getCoordinates()
     for playerIndex,duration in pairs(licenses) do
-        local player = Player(playerIndex)
+        local faction = Faction(playerIndex)
 
-        if player.isPlayer then
+        if faction.isPlayer or faction.isAlliance then
             -- read current or init new
             local pLicenses = Scrapyard.GetPlayerLicense(playerIndex)
             local time = round(duration - timeStep)
-            if time < 0 then
+            if time <= 0 then
               time = nil
             end
             pLicenses[x][y] = time
 
-            player:setValue("MoveUI#Licenses", serialize(pLicenses))
+            faction:setValue("MoveUI#Licenses", serialize(pLicenses))
         end
     end
 
@@ -30,11 +31,11 @@ end
 function Scrapyard.GetPlayerLicense(playerIndex)
 
     local x,y = Sector():getCoordinates()
-    local player = Player(playerIndex)
+    local faction = Faction(playerIndex)
 
     local licenses
-    local PlayerLicenses = player:getValue("MoveUI#Licenses") or false
-    if player and player.isPlayer and PlayerLicenses then
+    local PlayerLicenses = faction:getValue("MoveUI#Licenses") or false
+    if faction and (faction.isPlayer or faction.isAlliance) and PlayerLicenses then
         licenses = loadstring(PlayerLicenses)()
     else
         licenses = {}

@@ -7,6 +7,7 @@ require ("utility")
 -- namespace ScrapyardLicenses
 ScrapyardLicenses = {}
 
+local FactionValues = {}
 local Title = 'ScrapyardLicenses'
 
 function ScrapyardLicenses.initialize()
@@ -22,6 +23,16 @@ function ScrapyardLicenses.initialize()
   end
 end
 
+function ScrapyardLicenses.TableSize(tabl)
+  local i = 0
+  for x,cols in pairs(tabl) do
+      for y,data in pairs(cols) do
+          i = i + 1
+      end
+  end
+  return i
+end
+
 function ScrapyardLicenses.onPreRenderHud()
     if onClient() then
         local rect = Rect(vec2(), vec2(400, 100))
@@ -31,25 +42,25 @@ function ScrapyardLicenses.onPreRenderHud()
         rect.position = MoveUI.CheckOverride(Player(), DefaulPosition, OverridePosition, Title)
 
         --get the licenses
-        local licenses = Player():getValue("MoveUI#Licenses") or 'return {}'
+        local player = Player()
+        local playerShip = Entity(player.craftIndex)
+        local ShipFaction = playerShip.factionIndex
 
-        licenses = loadstring(licenses)()
-        local i = 0
-        if licenses then
-            for x,cols in pairs(licenses) do
-                for y,data in pairs(cols) do
-                    i = i + 1
-                end
-            end
-        end
+        ScrapyardLicenses.GetFactionValues(ShipFaction)
+        ScrapyardLicenses.sync()
 
-        local HSplit = UIHorizontalMultiSplitter(rect, 10, 8, i - 1)
+        local FactionLicenses = FactionValues['MoveUI#Licenses'] or 'return { }'
+        FactionLicenses = loadstring(FactionLicenses)()
 
-        if i == 0 then licenses = nil end
+        local FactionLicensesSize = ScrapyardLicenses.TableSize(FactionLicenses)
+
+        local HSplit = UIHorizontalMultiSplitter(rect, 10, 8, FactionLicensesSize - 1)
+
+        if FactionLicensesSize == 0 then FactionLicenses = nil end
         --Reset index
-        i = 0
-        if licenses then
-            for x,cols in pairs(licenses) do
+        local i = 0
+        if FactionLicenses then
+            for x,cols in pairs(FactionLicenses) do
                 for y,duration in pairs(cols) do
                     local color = MoveUI.TimeRemainingColor(duration)
                     drawTextRect(x..' : '..y, HSplit:partition(i), -1, 0, color, 15, 0, 0, 0)
@@ -60,7 +71,6 @@ function ScrapyardLicenses.onPreRenderHud()
                 end
             end
         end
-
 
         --MoveUI stuff
         OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
@@ -74,26 +84,64 @@ function ScrapyardLicenses.setNewPosition(Position)
     MoveUI.AssignPlayerOverride(Player(), Title, Position)
 end
 
-function ScrapyardLicenses.onSectorEntered(playerIndex,x,y)
-  local licenses = Player():getValue("MoveUI#Licenses") or 'return {}'
+function ScrapyardLicenses.GetFactionValues(factionIndex)
+  if onClient() then
+    invokeServerFunction('GetFactionValues',factionIndex)
+    return
+  end
+  local faction = Faction(factionIndex)
+  if not faction then return end
+  FactionValues = faction:getValues()
+end
 
-  licenses = loadstring(licenses)()
+function ScrapyardLicenses.SetFactionValues(factionIndex,licenses)
+  if onClient() then
+    invokeServerFunction('GetFactionValues',factionIndex,licenses)
+    return
+  end
+  local faction = Faction(factionIndex)
+  if not faction then return end
+  faction:setValue("MoveUI#Licenses", MoveUI.Serialize(licenses))
+end
+
+function ScrapyardLicenses.sync(values)
+  if onClient() then
+    if values then
+      FactionValues = values.FactionValues
+      return
+    end
+    invokeServerFunction('sync')
+    return
+  end
+  invokeClientFunction(Player(callingPlayer),'sync',{FactionValues = FactionValues})
+end
+
+function ScrapyardLicenses.onSectorEntered(playerIndex,x,y)
+  local player = Player()
+  local playerShip = Entity(player.craftIndex)
+  local ShipFaction = playerShip.factionIndex
+
+  ScrapyardLicenses.GetFactionValues(ShipFaction)
+  ScrapyardLicenses.sync()
+
+  local FactionLicenses = FactionValues['MoveUI#Licenses'] or 'return { }'
+  FactionLicenses = loadstring(FactionLicenses)()
+
   local x,y = Sector():getCoordinates()
 
-  if (type(licenses[x]) == "table") then
+  if (type(FactionLicenses[x]) == "table") then
     local count = 0
-    for _ in pairs( licenses[x] ) do
+    for _ in pairs( FactionLicenses[x] ) do
       count = count + 1
     end
     if count == 0 then
       --Remove X table since its empty
-      licenses[x] = nil
-    elseif (type(licenses[x][y]) == "number") then
+      FactionLicenses[x] = nil
+    elseif (type(FactionLicenses[x][y]) == "number") then
       --Delete this sectors licenses since any active scrapyards will update
-      licenses[x][y] = nil
+      FactionLicenses[x][y] = nil
       print('Removing:',x,y,'from licenses')
     end
   end
-
-  Player():setValue("MoveUI#Licenses", MoveUI.Serialize(licenses))
+  ScrapyardLicenses.SetFactionValues(ShipFaction,FactionLicenses)
 end
