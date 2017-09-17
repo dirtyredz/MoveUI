@@ -114,10 +114,10 @@ function MoveUIOptions.onAllowUIMovement(checkbox, value)
       return
     end
     if value then
-      Player():setValue('MoveUI',true)
+      Player(callingPlayer):setValue('MoveUI',true)
       return
     end
-    Player():setValue('MoveUI',nil)
+    Player(callingPlayer):setValue('MoveUI',nil)
 end
 
 function MoveUIOptions.onEnableUI(checkbox, value, hudIndex)
@@ -131,7 +131,7 @@ function MoveUIOptions.onEnableUI(checkbox, value, hudIndex)
       invokeServerFunction('onEnableUI',nil,value,hudIndex)
       return
     end
-    local player = Player(callingplayer)
+    local player = Player(callingPlayer)
     local hudOptions = MoveUIOptions.HudList[hudIndex]
     if value then
       if hudOptions.Restriction(player) then
