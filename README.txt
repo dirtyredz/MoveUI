@@ -89,6 +89,7 @@ Older Downloads
       Special Thxs to dnightmare, for working with me and collaborating on how to get this to work.
   -ResourceUI now had valid currency format
       Special Thxs to dnightmare, for adding this in.
+  -MoveUI should work with alliance ships now.
 
 [b][size=24pt]GITHUB[/size][/b]
 [hr]
