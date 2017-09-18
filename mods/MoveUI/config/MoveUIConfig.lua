@@ -20,6 +20,6 @@ MoveUIConfig.AddUI("ResourcesUI")
 MoveUIConfig.AddUI("DistCoreDisplay")
 MoveUIConfig.AddUI("CargoNotifier", true)
 MoveUIConfig.AddUI("ScrapyardLicenses", true)
-MoveUIConfig.AddUI("ObjectDetextor", false)
+MoveUIConfig.AddUI("ObjectDetector", false)
 
 return MoveUIConfig
