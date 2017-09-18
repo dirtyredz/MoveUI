@@ -93,7 +93,7 @@ function ObjectDetector.detect()
         wrecks = wrecks + 1
       elseif entity:hasScript("entity/stash.lua") then
         stashes = stashes + 1
-      elseif entity:hasScript("entity/exodusbeacon.lua") then
+      elseif entity:hasScript("entity/story/exodusbeacon.lua") then
         exodus = exodus + 1
       end
     end
