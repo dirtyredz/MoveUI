@@ -1,6 +1,6 @@
 local MoveUIConfig = {}
 
-MoveUIConfig.version = "[1.3.0]"
+MoveUIConfig.version = "[1.2.0]"
 MoveUIConfig.ModName = "[MoveUI]"
 MoveUIConfig.HudList = {}
 
@@ -22,6 +22,6 @@ MoveUIConfig.AddUI("DistCore")
 --MoveUIConfig.AddUI("DistCoreDisplay",false,false,function (player) return player:getValue('granted_benefits') or false end)
 MoveUIConfig.AddUI("CargoNotifier", true)
 MoveUIConfig.AddUI("ScrapyardLicenses", true)
-MoveUIConfig.AddUI("ObjectDetector", false)
+MoveUIConfig.AddUI("ObjectDetector", true)
 
 return MoveUIConfig
