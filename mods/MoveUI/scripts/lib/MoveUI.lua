@@ -4,8 +4,7 @@ require('mods.MoveUI.scripts.lib.serialize')
 MoveUI.Serialize = serialize
 
 function MoveUI.Enabled(player,rect,overide)
-  local OverridePosition = false
-  local AllowMoving = player:getValue('MoveUI') or false
+  local AllowMoving = MoveUI.AllowedMoving(player)
   if AllowMoving then
     drawBorder(rect, ColorRGB(0.8,0.8,0.8))
 
@@ -23,7 +22,12 @@ function MoveUI.Enabled(player,rect,overide)
       return overide, false
     end
   end
-  return OverridePosition, false
+  return false, false
+end
+
+function MoveUI.AllowedMoving(player)
+  if not player then return false end
+  return player:getValue('MoveUI') or false
 end
 
 function MoveUI.CheckOverride(player,default,override,title)

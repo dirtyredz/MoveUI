@@ -1,6 +1,6 @@
 local MoveUIConfig = {}
 
-MoveUIConfig.version = "[1.2.0]"
+MoveUIConfig.version = "[1.3.0]"
 MoveUIConfig.ModName = "[MoveUI]"
 MoveUIConfig.HudList = {}
 
@@ -17,7 +17,9 @@ function MoveUIConfig.AddUI(FileName, ForceStartEnabled, ForceRemove, Restrictio
 end
 
 MoveUIConfig.AddUI("ResourcesUI")
-MoveUIConfig.AddUI("DistCoreDisplay")
+MoveUIConfig.AddUI("DistCore")
+--example restrictions use:
+--MoveUIConfig.AddUI("DistCoreDisplay",false,false,function (player) return player:getValue('granted_benefits') or false end)
 MoveUIConfig.AddUI("CargoNotifier", true)
 MoveUIConfig.AddUI("ScrapyardLicenses", true)
 MoveUIConfig.AddUI("ObjectDetector", false)
