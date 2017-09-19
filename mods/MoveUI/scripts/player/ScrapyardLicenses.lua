@@ -1,3 +1,4 @@
+--MoveUI - Dirtyredz|David McClain
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 package.path = package.path .. ";data/scripts/lib/?.lua"
 
@@ -8,9 +9,23 @@ require ("utility")
 ScrapyardLicenses = {}
 
 local FactionValues = {}
+local OverridePosition
 local Title = 'ScrapyardLicenses'
 local Icon = "data/textures/icons/papers.png"
 local Description = "Shows all current Scrapyard Licenses, Displays Alliance Licenses if inside an Alliance Ship."
+
+function ScrapyardLicenses.initialize()
+  if onClient() then
+    --Obviously
+    Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+  else
+    --Lets do some checks on startup/sector entered
+    Player():registerCallback("onSectorEntered", "onSectorEntered")
+
+    local x,y = Sector():getCoordinates()
+    ScrapyardLicenses.onSectorEntered(Player().index,x,y)
+  end
+end
 
 function ScrapyardLicenses.buildTab(tabbedWindow)
   local FileTab = tabbedWindow:createTab("", Icon, Title)
@@ -26,21 +41,6 @@ function ScrapyardLicenses.buildTab(tabbedWindow)
   TopMessage.size = vec2(FileTab.size.x - 40, 20)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
-end
-
-local OverridePosition
-
-function ScrapyardLicenses.initialize()
-  if onClient() then
-    --Obviously
-    Player():registerCallback("onPreRenderHud", "onPreRenderHud")
-  else
-    --Lets do some checks on startup/sector entered
-    Player():registerCallback("onSectorEntered", "onSectorEntered")
-
-    local x,y = Sector():getCoordinates()
-    ScrapyardLicenses.onSectorEntered(Player().index,x,y)
-  end
 end
 
 function ScrapyardLicenses.TableSize(tabl)

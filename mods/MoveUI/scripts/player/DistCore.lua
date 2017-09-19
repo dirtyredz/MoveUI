@@ -5,14 +5,15 @@ local MoveUI = require('MoveUI')
 -- namespace DistCore
 DistCore = {}
 
-function DistCore.initialize()
-  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
-end
+local OverridePosition
 
---MoveUI - Dirtyredz|David McClain
 local Title = 'DistCore'
 local Icon = "data/textures/icons/chart.png"
 local Description = "Displays Distance to the center of the galaxy (core)."
+
+function DistCore.initialize()
+  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+end
 
 function DistCore.buildTab(tabbedWindow)
   local FileTab = tabbedWindow:createTab("", Icon, Title)
@@ -29,8 +30,6 @@ function DistCore.buildTab(tabbedWindow)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 end
-
-local OverridePosition
 
 function DistCore.onPreRenderHud()
   local rect = Rect(vec2(),vec2(160,25))
@@ -53,12 +52,11 @@ function DistCore.onPreRenderHud()
 
   local lx, ly = Sector():getCoordinates()
   local distanceFromCenter =  math.floor(length(vec2(lx,ly)))
-  drawTextRect('Dist to Core: '..distanceFromCenter, rect,0, 0,ColorRGB(0,1,0), 15, 0, 0, 0)
+  drawTextRect('Dist to Core: '..distanceFromCenter, rect,0, 0,ColorRGB(0.5,0.5,0.5), 15, 0, 0, 0)
 end
 
---MoveUI - Dirtyredz|David McClain
 function DistCore.setNewPosition(Position)
   MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
---MoveUI - Dirtyredz|David McClain
+
 return DistCore

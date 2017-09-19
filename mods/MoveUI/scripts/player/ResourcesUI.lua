@@ -5,14 +5,15 @@ local MoveUI = require('MoveUI')
 -- namespace ResourcesUI
 ResourcesUI = {}
 
-function ResourcesUI.initialize()
-  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
-end
+local OverridePosition
 
---MoveUI - Dirtyredz|David McClain
 local Title = 'ResourcesUI'
 local Icon = "data/textures/icons/brick-pile.png"
 local Description = "Shows all your resources."
+
+function ResourcesUI.initialize()
+  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+end
 
 function ResourcesUI.buildTab(tabbedWindow)
   local FileTab = tabbedWindow:createTab("", Icon, Title)
@@ -29,8 +30,6 @@ function ResourcesUI.buildTab(tabbedWindow)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 end
-
-local OverridePosition
 
 function ResourcesUI.onPreRenderHud()
   local rect = Rect(vec2(),vec2(300,155))
@@ -63,9 +62,8 @@ function ResourcesUI.onPreRenderHud()
   end
 end
 
---MoveUI - Dirtyredz|David McClain
 function ResourcesUI.setNewPosition(Position)
   MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
---MoveUI - Dirtyredz|David McClain
+
 return ResourcesUI

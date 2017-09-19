@@ -5,14 +5,15 @@ local MoveUI = require('MoveUI')
 -- namespace CargoNotifier
 CargoNotifier = {}
 
-function CargoNotifier.initialize(Description)
-  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
-end
+local OverridePosition
 
---MoveUI - Dirtyredz|David McClain
 local Title = 'CargoNotifier'
 local Icon = "data/textures/icons/wooden-crate.png"
 local Description = "Displays warning if you have Dangerous, Stolen, Suspicious, or Illegal Cargo"
+
+function CargoNotifier.initialize(Description)
+  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+end
 
 function CargoNotifier.buildTab(tabbedWindow)
   local FileTab = tabbedWindow:createTab("", Icon, Title)
@@ -29,8 +30,6 @@ function CargoNotifier.buildTab(tabbedWindow)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 end
-
-local OverridePosition
 
 function CargoNotifier.onPreRenderHud()
   if onClient() then
@@ -87,9 +86,8 @@ function CargoNotifier.onPreRenderHud()
   end
 end
 
---MoveUI - Dirtyredz|David McClain
 function CargoNotifier.setNewPosition(Position)
   MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
---MoveUI - Dirtyredz|David McClain
+
 return CargoNotifier

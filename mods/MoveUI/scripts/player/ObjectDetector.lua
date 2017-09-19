@@ -5,8 +5,8 @@ local MoveUI = require('MoveUI')
 -- namespace ObjectDetector
 ObjectDetector = {}
 
+local OverridePosition
 
---MoveUI - Dirtyredz|David McClain
 local Title = 'ObjectDetector'
 local Icon = "data/textures/icons/movement-sensor.png"
 local Description = "Will display if you have valuable objects inside the sector, depending if you have the c43 Object Detector Module equiped."
@@ -16,7 +16,6 @@ local asteroids = 0
 local wrecks = 0
 local stashes = 0
 local exodus = 0
-
 
 function ObjectDetector.initialize()
   if onClient() then
@@ -41,8 +40,6 @@ function ObjectDetector.buildTab(tabbedWindow)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 end
-
-local OverridePosition
 
 function ObjectDetector.onPreRenderHud()
   if onClient() then
@@ -140,9 +137,8 @@ function ObjectDetector.detect()
   end
 end
 
---MoveUI - Dirtyredz|David McClain
 function ObjectDetector.setNewPosition(Position)
   MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
---MoveUI - Dirtyredz|David McClain
+
 return ObjectDetector
