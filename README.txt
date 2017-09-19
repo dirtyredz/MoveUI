@@ -42,6 +42,16 @@ For his original idea, and work. He started this idea while working on: http://w
 He continued to work with me on the best approach to make this UI possible.
 Thxs again!!
 
+[center][b][size=25pt]ObjectDetector[/size][/b][/center]
+This UI will display when your C43 Object Detector Module, has detected a valuable object inside the sector.
+not only will it detect it, but it will display what was detected, and maintain the UI until you leave the sector, so you always know if thiers a valuable object inside the sector.
+
+[img]http://imgur.com/6gdhrMw.png[/img]
+
+SPECIAL THANKS AND CREDIT: dnightmare
+He and I infact started work on this together, but he beat me to it.
+So I took his work and incorperated my work in to his.
+Thxs again!!
 
 Remember with all these UI's they can be Moved, Enabled, Disabled, or even restricted to specific situations (coding skill required)
 
@@ -75,15 +85,24 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/1.1.0/MoveUI.v1.1.0.zip]MoveUI v1.1.0[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/1.2.0/MoveUI.v1.2.0.zip]MoveUI v1.2.0[/url]
 
 Older Downloads
 [spoiler]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/1.1.0/MoveUI.v1.1.0.zip]MoveUI v1.1.0[/url]
+
 [url=https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip]MoveUI v1.0.0[/url]
 [/spoiler]
 
 [b][size=24pt]Changelog[/size][/b]
 [hr]
+1.2.0
+  -Added ObjectDetector
+      Special Thxs to dnightmare, we were apprently working on this at the same time.
+  -Cleaned up the files, and added ExampleUI.lua to easily show others how its done.
+  -Added tab support to the main MoveUI interface.
+  -Each UI can now build its own tab inside the main MoveUI interface, allowing for more options and descriptions
+
 1.1.0
   -Added ScrapyardLicenses
       Special Thxs to dnightmare, for working with me and collaborating on how to get this to work.

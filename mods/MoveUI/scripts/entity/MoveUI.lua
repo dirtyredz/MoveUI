@@ -32,7 +32,7 @@ function MoveUIOptions.initUI()
     local NumUIs = #MoveUIOptions.HudList or 1
 
     local res = getResolution()
-    local size = vec2(400, (NumUIs*50)*2)
+    local size = vec2((300 + (NumUIs*30)), (NumUIs*50)*2)
 
     local menu = ScriptUI()
     MainWindow = menu:createWindow(Rect(res * 0.5 - size * 0.5, res * 0.5 + size * 0.5));
@@ -41,10 +41,18 @@ function MoveUIOptions.initUI()
     MainWindow.showCloseButton = 1
     MainWindow.moveable = 1
 
-    local container = MainWindow:createContainer(Rect(vec2(0, 0), size));
+    -- create a tabbed window inside the main window
+    local tabbedWindow = MainWindow:createTabbedWindow(Rect(vec2(10, 10), size - 10))
+
+    -- create buy tab
+    local MainTab = tabbedWindow:createTab("Main"%_t, "", "Main"%_t)
+
+    local container = MainTab:createContainer(Rect(vec2(0, 0), MainTab.size));
+    --local container = MainWindow:createContainer(Rect(vec2(0, 0), size));
 
     --split it 50/50
-    local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), size), 0, 0, 0.5)
+    local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), MainTab.size), 0, 0, 0.5)
+    --local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), size), 0, 0, 0.5)
 
     --Top Message
     local TopHSplit = UIHorizontalSplitter(mainSplit.top, 0, 0, 0.5)
@@ -74,6 +82,15 @@ function MoveUIOptions.initUI()
         local OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onEnableUI')
 
         table.insert(UILabels,{name = name, hudIndex = index, OnOff = OnOff, index = OnOff.index})
+      end
+    end
+
+    for index,HudFile in pairs(MoveUIOptions.HudList) do
+      if HudFile.FileName then
+        local exsist, UIFile = pcall(require, 'mods.MoveUI.scripts.player.'..HudFile.FileName)
+        if exsist and UIFile.buildTab then
+          UIFile.buildTab(tabbedWindow)
+        end
       end
     end
 end

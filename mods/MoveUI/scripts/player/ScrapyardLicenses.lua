@@ -1,3 +1,4 @@
+--MoveUI - Dirtyredz|David McClain
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 package.path = package.path .. ";data/scripts/lib/?.lua"
 
@@ -8,7 +9,10 @@ require ("utility")
 ScrapyardLicenses = {}
 
 local FactionValues = {}
+local OverridePosition
 local Title = 'ScrapyardLicenses'
+local Icon = "data/textures/icons/papers.png"
+local Description = "Shows all current Scrapyard Licenses, Displays Alliance Licenses if inside an Alliance Ship."
 
 function ScrapyardLicenses.initialize()
   if onClient() then
@@ -21,6 +25,22 @@ function ScrapyardLicenses.initialize()
     local x,y = Sector():getCoordinates()
     ScrapyardLicenses.onSectorEntered(Player().index,x,y)
   end
+end
+
+function ScrapyardLicenses.buildTab(tabbedWindow)
+  local FileTab = tabbedWindow:createTab("", Icon, Title)
+  local container = FileTab:createContainer(Rect(vec2(0, 0), FileTab.size));
+
+  --split it 50/50
+  local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), FileTab.size), 0, 0, 0.5)
+
+  --Top Message
+  local TopHSplit = UIHorizontalSplitter(mainSplit.top, 0, 0, 0.3)
+  local TopMessage = container:createLabel(TopHSplit.top.lower + vec2(10,10), Title, 16)
+  TopMessage.centered = 1
+  TopMessage.size = vec2(FileTab.size.x - 40, 20)
+
+  local Description = container:createTextField(TopHSplit.bottom, Description)
 end
 
 function ScrapyardLicenses.TableSize(tabl)
@@ -41,10 +61,20 @@ function ScrapyardLicenses.onPreRenderHud()
         local DefaulPosition = vec2(res.x * 0.88, res.y * 0.21)
         rect.position = MoveUI.CheckOverride(Player(), DefaulPosition, OverridePosition, Title)
 
+        OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
+        if OverridePosition and not Moving then
+            invokeServerFunction('setNewPosition', OverridePosition)
+        end
+
+        if MoveUI.AllowedMoving(Player()) then
+          drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
+          return
+        end
+
         --get the licenses
         local player = Player()
         local playerShip = Entity(player.craftIndex)
-        
+
         local ShipFaction
         if playerShip then
           ShipFaction = playerShip.factionIndex
@@ -76,12 +106,6 @@ function ScrapyardLicenses.onPreRenderHud()
                     i = i + 1
                 end
             end
-        end
-
-        --MoveUI stuff
-        OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
-        if OverridePosition and not Moving then
-            invokeServerFunction('setNewPosition', OverridePosition)
         end
     end
 end
@@ -157,3 +181,5 @@ function ScrapyardLicenses.onSectorEntered(playerIndex,x,y)
   end
   ScrapyardLicenses.SetFactionValues(ShipFaction,FactionLicenses)
 end
+
+return ScrapyardLicenses

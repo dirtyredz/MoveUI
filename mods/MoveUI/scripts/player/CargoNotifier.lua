@@ -5,14 +5,31 @@ local MoveUI = require('MoveUI')
 -- namespace CargoNotifier
 CargoNotifier = {}
 
---MoveUI - Dirtyredz|David McClain
+local OverridePosition
+
 local Title = 'CargoNotifier'
+local Icon = "data/textures/icons/wooden-crate.png"
+local Description = "Displays warning if you have Dangerous, Stolen, Suspicious, or Illegal Cargo"
 
 function CargoNotifier.initialize(Description)
   Player():registerCallback("onPreRenderHud", "onPreRenderHud")
 end
 
-local OverridePosition
+function CargoNotifier.buildTab(tabbedWindow)
+  local FileTab = tabbedWindow:createTab("", Icon, Title)
+  local container = FileTab:createContainer(Rect(vec2(0, 0), FileTab.size));
+
+  --split it 50/50
+  local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), FileTab.size), 0, 0, 0.5)
+
+  --Top Message
+  local TopHSplit = UIHorizontalSplitter(mainSplit.top, 0, 0, 0.3)
+  local TopMessage = container:createLabel(TopHSplit.top.lower + vec2(10,10), Title, 16)
+  TopMessage.centered = 1
+  TopMessage.size = vec2(FileTab.size.x - 40, 20)
+
+  local Description = container:createTextField(TopHSplit.bottom, Description)
+end
 
 function CargoNotifier.onPreRenderHud()
   if onClient() then
@@ -30,6 +47,16 @@ function CargoNotifier.onPreRenderHud()
     --MoveUI - Dirtyredz|David McClain
     local DefaulPosition = vec2(res.x * 0.34,res.y * 0.07)
     rect.position = MoveUI.CheckOverride(Player(),DefaulPosition,OverridePosition,Title)
+
+    OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
+    if OverridePosition and not Moving then
+        invokeServerFunction('setNewPosition', OverridePosition)
+    end
+
+    if MoveUI.AllowedMoving(Player()) then
+      drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
+      return
+    end
     --MoveUI - Dirtyredz|David McClain
 
     local HSplit = UIHorizontalMultiSplitter(rect, 10, 10, 3)
@@ -56,19 +83,11 @@ function CargoNotifier.onPreRenderHud()
         SeenSuspicious = true
       end
     end
-
-    --MoveUI - Dirtyredz|David McClain
-    OverridePosition, Moving = MoveUI.Enabled(Player(),rect,OverridePosition)
-    if OverridePosition and not Moving then
-      invokeServerFunction('setNewPosition',OverridePosition)
-    end
-    --MoveUI - Dirtyredz|David McClain
-
   end
 end
 
---MoveUI - Dirtyredz|David McClain
 function CargoNotifier.setNewPosition(Position)
   MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
---MoveUI - Dirtyredz|David McClain
+
+return CargoNotifier
