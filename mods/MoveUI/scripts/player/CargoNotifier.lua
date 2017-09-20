@@ -10,6 +10,9 @@ local OverridePosition
 local Title = 'CargoNotifier'
 local Icon = "data/textures/icons/wooden-crate.png"
 local Description = "Displays warning if you have Dangerous, Stolen, Suspicious, or Illegal Cargo"
+local DefaultOptions = {
+  AF = false
+}
 
 function CargoNotifier.initialize(Description)
   Player():registerCallback("onPreRenderHud", "onPreRenderHud")
@@ -29,6 +32,29 @@ function CargoNotifier.buildTab(tabbedWindow)
   TopMessage.size = vec2(FileTab.size.x - 40, 20)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
+
+  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 1)
+
+  local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
+  local name = container:createLabel(TextVSplit.left.lower, "Allow Flashing", 16)
+
+  AF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowFlashing')
+
+  --
+  return {onAllowFlashing = CargoNotifier.onAllowFlashing, setNewOptions = CargoNotifier.setNewOptions}
+end
+
+function CargoNotifier.onAllowFlashing(checkbox, value)
+  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
+  invokeServerFunction('setNewOptions', Title, {AF = value})
+end
+
+--Executed when the Main UI Interface is opened.
+function CargoNotifier.onShowWindow()
+  --Get the player options
+  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  --Set the checkbox to match the option
+  AF_OnOff.checked = LoadedOptions.AF
 end
 
 function CargoNotifier.onPreRenderHud()
@@ -60,6 +86,10 @@ function CargoNotifier.onPreRenderHud()
     --MoveUI - Dirtyredz|David McClain
 
     local HSplit = UIHorizontalMultiSplitter(rect, 10, 10, 3)
+
+    --Flashing Option
+    local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+    if os.time() % 2 == 0 and LoadedOptions.AF then return end
 
     for TradingGood,index in pairs(Cargos) do
       if TradingGood.illegal and not SeenIllegal then

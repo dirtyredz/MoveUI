@@ -2,6 +2,9 @@ package.path = package.path .. ";data/scripts/lib/?.lua"
 require ("stringutility")
 require ("utility")
 
+package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
+local MoveUI = require('MoveUI')
+
 -- Don't remove or alter the following comment, it tells the game the namespace this script lives in. If you remove it, the script will break.
 -- namespace MoveUIOptions
 MoveUIOptions = {}
@@ -15,6 +18,7 @@ MoveUIOptions.HudList = MoveUIConfig.HudList or {}
 
 local UILabels = {}
 local MoveAllCheckbox
+local ShowWindowFuncs = {}
 
 function MoveUIOptions.interactionPossible(playerIndex, option)
   local factionIndex = Entity().factionIndex
@@ -87,12 +91,28 @@ function MoveUIOptions.initUI()
 
     for index,HudFile in pairs(MoveUIOptions.HudList) do
       if HudFile.FileName then
+        --Get the UI's File and all its functions.
         local exsist, UIFile = pcall(require, 'mods.MoveUI.scripts.player.'..HudFile.FileName)
         if exsist and UIFile.buildTab then
-          UIFile.buildTab(tabbedWindow)
+          --Check and store the UI's onShowWindow functions
+          if UIFile.onShowWindow then table.insert(ShowWindowFuncs,UIFile.onShowWindow) end
+
+          --Build the tab using the UI's buildTab function
+          local InterfaceFunctions = UIFile.buildTab(tabbedWindow) or {}
+
+          --The UI's buildTab option will return a table of functions to be added to the MoveUIOptions table
+          --This is necassary since string callback functions search for the function isnde this namespace
+          for name,func in pairs(InterfaceFunctions) do
+            MoveUIOptions[name] = func
+          end
         end
       end
     end
+end
+
+--Set the UI's Options to the players data
+function MoveUIOptions.setNewOptions(Title,Options)
+  MoveUI.SetOptions(Player(),Title,Options)
 end
 
 function MoveUIOptions.onShowWindow()
@@ -104,6 +124,13 @@ function MoveUIOptions.onShowWindow()
       checkbox.OnOff.checked = true
     else
       checkbox.OnOff.checked = false
+    end
+  end
+
+  --execute all onShowWindows for all UI's
+  for _,func in pairs(ShowWindowFuncs) do
+    if type(func) == 'function' then
+      func()
     end
   end
 end

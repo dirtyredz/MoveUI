@@ -43,11 +43,26 @@ function MoveUI.CheckOverride(player,default,override,title)
   return default
 end
 
+function MoveUI.GetOptions(player,title,defaults)
+  local LoadedOptions = player:getValue(title..'_MUI_Opt') or 'return nil'
+  LoadedOptions = loadstring(LoadedOptions)()
+  if not LoadedOptions then return defaults end
+  return LoadedOptions
+end
+
+function MoveUI.SetOptions(player,title, options)
+  if onServer() then
+    player:setValue(title..'_MUI_Opt', MoveUI.Serialize(options))
+  end
+end
+
 function MoveUI.AssignPlayerOverride(player,title,position)
-  local NewPosition = {}
-  NewPosition.x = position.x
-  NewPosition.y = position.y
-  player:setValue(title..'_MUI', MoveUI.Serialize(NewPosition))
+  if onServer() then
+    local NewPosition = {}
+    NewPosition.x = position.x
+    NewPosition.y = position.y
+    player:setValue(title..'_MUI', MoveUI.Serialize(NewPosition))
+  end
 end
 
 function MoveUI.NicerNumbers(n) -- http://lua-users.org/wiki/FormattingNumbers // credit http://richard.warburton.it
