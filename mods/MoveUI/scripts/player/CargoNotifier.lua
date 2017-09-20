@@ -41,7 +41,7 @@ function CargoNotifier.buildTab(tabbedWindow)
   AF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowFlashing')
 
   --
-  return {onAllowFlashing = CargoNotifier.onAllowFlashing, setNewOptions = CargoNotifier.setNewOptions}
+  return {onAllowFlashing = CargoNotifier.onAllowFlashing}
 end
 
 function CargoNotifier.onAllowFlashing(checkbox, value)

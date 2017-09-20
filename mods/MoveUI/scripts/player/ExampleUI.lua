@@ -12,12 +12,11 @@ local OverridePosition --Needed so, we can move the UI
 local Title = 'ExampleUI' --Need so we can set overrided values to the player
 local Icon = "data/textures/icons/chart.png" --Used by the buildTab function
 local Description = "An exampleUI" --Used by the buildTab function
-
+  
 function ExampleUI.initialize() --Required
   --Register onPreRenderHud to the player so we can start displaying HUD's
   Player():registerCallback("onPreRenderHud", "onPreRenderHud")
 end
-
 
 function ExampleUI.buildTab(tabbedWindow) --Builds a tab inside of the main MoveUI interface
   --If you dont want thier to be a tab simply remove everything inside this function
@@ -35,6 +34,7 @@ function ExampleUI.buildTab(tabbedWindow) --Builds a tab inside of the main Move
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 end
+
 
 function ExampleUI.onPreRenderHud() --Heres where we display the hud
   local rect = Rect(vec2(),vec2(160,25)) --default size of the rect (width,hight)
