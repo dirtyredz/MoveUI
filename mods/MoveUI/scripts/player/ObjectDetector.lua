@@ -10,6 +10,10 @@ local OverridePosition
 local Title = 'ObjectDetector'
 local Icon = "data/textures/icons/movement-sensor.png"
 local Description = "Will display if you have valuable objects inside the sector, depending if you have the c43 Object Detector Module equiped."
+local DefaultOptions = {
+  AF = false
+}
+local AF_OnOff
 
 local timeout = 0
 local asteroids = 0
@@ -39,6 +43,30 @@ function ObjectDetector.buildTab(tabbedWindow)
   TopMessage.size = vec2(FileTab.size.x - 40, 20)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
+
+  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 1)
+
+  local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
+  local name = container:createLabel(TextVSplit.left.lower, "Allow Flashing", 16)
+
+  --make sure variables are local to this file only
+  AF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowFlashing')
+
+  --Pass the name of the function, and the checkbox
+  return {onAllowFlashing = AF_OnOff}
+end
+
+function ObjectDetector.onAllowFlashing(checkbox, value)
+  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
+  invokeServerFunction('setNewOptions', Title, {AF = value})
+end
+
+--Executed when the Main UI Interface is opened.
+function ObjectDetector.onShowWindow()
+  --Get the player options
+  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  --Set the checkbox to match the option
+  AF_OnOff.checked = LoadedOptions.AF
 end
 
 function ObjectDetector.onPreRenderHud()
@@ -64,6 +92,10 @@ function ObjectDetector.onPreRenderHud()
       return
     end
     --MoveUI - Dirtyredz|David McClain
+
+    --Flashing Option
+    local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+    if os.time() % 2 == 0 and LoadedOptions.AF then return end
 
     local VSplit = UIVerticalMultiSplitter(rect, 5, 5, 3)
 

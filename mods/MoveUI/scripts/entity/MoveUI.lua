@@ -99,11 +99,12 @@ function MoveUIOptions.initUI()
 
           --Build the tab using the UI's buildTab function
           local InterfaceFunctions = UIFile.buildTab(tabbedWindow) or {}
-
           --The UI's buildTab option will return a table of functions to be added to the MoveUIOptions table
-          --This is necassary since string callback functions search for the function isnde this namespace
-          for name,func in pairs(InterfaceFunctions) do
-            MoveUIOptions[name] = func
+          --This is necassary since string callback functions search for the function inside this namespace
+          for FuncName,CheckBox in pairs(InterfaceFunctions) do
+            --prepend it with the filename so the function name is always unique
+            CheckBox.onCheckedFunction = HudFile.FileName..'_'..FuncName
+            MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
           end
         end
       end

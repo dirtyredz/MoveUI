@@ -13,6 +13,7 @@ local Description = "Displays warning if you have Dangerous, Stolen, Suspicious,
 local DefaultOptions = {
   AF = false
 }
+local AF_OnOff
 
 function CargoNotifier.initialize(Description)
   Player():registerCallback("onPreRenderHud", "onPreRenderHud")
@@ -38,10 +39,11 @@ function CargoNotifier.buildTab(tabbedWindow)
   local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
   local name = container:createLabel(TextVSplit.left.lower, "Allow Flashing", 16)
 
+  --make sure variables are local to this file only
   AF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowFlashing')
 
-  --
-  return {onAllowFlashing = CargoNotifier.onAllowFlashing}
+  --Pass the name of the function, and the checkbox
+  return {onAllowFlashing = AF_OnOff}
 end
 
 function CargoNotifier.onAllowFlashing(checkbox, value)
