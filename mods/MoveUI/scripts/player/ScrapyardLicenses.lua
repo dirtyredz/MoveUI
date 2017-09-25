@@ -102,7 +102,9 @@ function ScrapyardLicenses.onPreRenderHud()
 
         --get the licenses
         local player = Player()
-        local playerShip = Entity(player.craftIndex)
+        if not player then return end
+        local playerShip = Sector():getEntity(player.craftIndex)
+        if not playerShip then return end
         local playerAlliance = player.allianceIndex
 
         local InAllianceShip = false
