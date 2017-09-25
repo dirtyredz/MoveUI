@@ -86,6 +86,8 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 ## Downloads
 ___
+https://github.com/dirtyredz/MoveUI/releases/download/1.2.1/MoveUI.v1.2.1.zip
+
 https://github.com/dirtyredz/MoveUI/releases/download/1.2.0/MoveUI.v1.2.0.zip
 
 https://github.com/dirtyredz/MoveUI/releases/download/1.1.0/MoveUI.v1.1.0.zip
@@ -95,6 +97,9 @@ https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip
 
 ## Changelog
 ___
+1.2.1
+  -Fixed Entity Creation bug error.
+
 1.2.0
   -Added ObjectDetector
       Special Thxs to dnightmare, we were apprently working on this at the same time.
