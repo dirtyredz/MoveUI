@@ -20,12 +20,28 @@ local asteroids = 0
 local wrecks = 0
 local stashes = 0
 local exodus = 0
+local rect
+local res
+local DefaulPosition
+local LoadedOptions
+local AllowMoving
+local player
 
 function ObjectDetector.initialize()
   if onClient() then
-    Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+    player = Player()
+
+    player:registerCallback("onPreRenderHud", "onPreRenderHud")
     ObjectDetector.detect()
+    LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+
+    rect = Rect(vec2(),vec2(320,20))
+    res = getResolution();
+    --MoveUI - Dirtyredz|David McClain
+    DefaulPosition = vec2(res.x * 0.5,res.y * 0.90)
+    rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
   end
+
   Player():registerCallback("onSectorEntered", "onSectorEntered")
 end
 
@@ -51,6 +67,7 @@ function ObjectDetector.buildTab(tabbedWindow)
 
   --make sure variables are local to this file only
   AF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowFlashing')
+  AF_OnOff.tooltip = 'Will Flash when an object is detected.'
 
   --Pass the name of the function, and the checkbox
   return {onAllowFlashing = AF_OnOff}
@@ -72,29 +89,26 @@ end
 function ObjectDetector.onPreRenderHud()
   if onClient() then
 
-    local ship = Player().craft
+    local ship = player.craft
     if not ship then return end
 
-    local rect = Rect(vec2(),vec2(320,20))
-    local res = getResolution();
-
-    --MoveUI - Dirtyredz|David McClain
-    local DefaulPosition = vec2(res.x * 0.5,res.y * 0.90)
-    rect.position = MoveUI.CheckOverride(Player(),DefaulPosition,OverridePosition,Title)
-
-    OverridePosition, Moving = MoveUI.Enabled(Player(),rect,OverridePosition)
-    if OverridePosition and not Moving then
-      invokeServerFunction('setNewPosition',OverridePosition)
+    if OverridePosition then
+      rect.position = OverridePosition
     end
 
-    if MoveUI.AllowedMoving(Player()) then
+    if AllowMoving then
+      OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
+      if OverridePosition and not Moving then
+          invokeServerFunction('setNewPosition', OverridePosition)
+          OverridePosition = nil
+      end
+
+
       drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
       return
     end
-    --MoveUI - Dirtyredz|David McClain
 
     --Flashing Option
-    local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
     if os.time() % 2 == 0 and LoadedOptions.AF then return end
 
     local VSplit = UIVerticalMultiSplitter(rect, 5, 5, 3)
@@ -124,11 +138,13 @@ function ObjectDetector.onPreRenderHud()
 end
 
 function ObjectDetector.updateClient(timeStep)
-  timeout = timeout + timeStep
-  if timeout > 5 then
-    timeout = 0
-    ObjectDetector.detect()
-  end
+  ObjectDetector.detect()
+  LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+  AllowMoving = MoveUI.AllowedMoving(player)
+end
+
+function ObjectDetector.getUpdateInterval()
+    return 5
 end
 
 function ObjectDetector.onSectorEntered(playerIndex)

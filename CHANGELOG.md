@@ -1,3 +1,16 @@
+1.3.0
+  --Every UI now utilizes delayed server/client communication
+      Will help tremendously with any high ping issues.
+      This will also cause a 1-5 sec delay when activating Movement of the UI's
+  --Added PVPSector, will show if a sector has pvp damaged Enabled/Disabled.
+  --ScrapyardLicenses now has the option to Allow for Clicking to show the sector on the map.
+  --ScrapyardLicenses now has the option to show both alliance/player licenses at the same time.
+  --CargoNotifier now has the option to have the UI Flash
+  --ObjectDetector now has the option to have the UI Flash
+
+1.2.1
+  -Fixed Entity Creation bug error.
+  
 1.2.0
   -Added ObjectDetector
       Special Thxs to dnightmare, we were apprently working on this at the same time.

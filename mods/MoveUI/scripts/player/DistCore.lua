@@ -10,9 +10,30 @@ local OverridePosition
 local Title = 'DistCore'
 local Icon = "data/textures/icons/chart.png"
 local Description = "Displays Distance to the center of the galaxy (core)."
+local rect
+local res
+local DefaulPosition
+local distanceFromCenter = ''
+local AllowMoving
+local player
 
 function DistCore.initialize()
-  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+  if onClient() then
+    player = Player()
+
+    player:registerCallback("onPreRenderHud", "onPreRenderHud")
+
+    rect = Rect(vec2(),vec2(160,25))
+    res = getResolution();
+
+    --MoveUI - Dirtyredz|David McClain
+    DefaulPosition = vec2(res.x * 0.045,res.y * 0.25)
+    rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
+
+    DistCore.GetDistance()
+  end
+
+  Player():registerCallback("onSectorEntered", "onSectorEntered")
 end
 
 function DistCore.buildTab(tabbedWindow)
@@ -45,27 +66,50 @@ function MoveUIOptions.UpdateColor(slider)
 end]]
 
 function DistCore.onPreRenderHud()
-  local rect = Rect(vec2(),vec2(160,25))
-  local res = getResolution();
 
-  --MoveUI - Dirtyredz|David McClain
-  local DefaulPosition = vec2(res.x * 0.045,res.y * 0.25)
-  rect.position = MoveUI.CheckOverride(Player(),DefaulPosition,OverridePosition,Title)
-
-  OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
-  if OverridePosition and not Moving then
-      invokeServerFunction('setNewPosition', OverridePosition)
+  if OverridePosition then
+    rect.position = OverridePosition
   end
 
-  if MoveUI.AllowedMoving(Player()) then
+  if AllowMoving then
+    OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
+    if OverridePosition and not Moving then
+        invokeServerFunction('setNewPosition', OverridePosition)
+        OverridePosition = nil
+    end
+
+
     drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
     return
   end
-  --MoveUI - Dirtyredz|David McClain
 
-  local lx, ly = Sector():getCoordinates()
-  local distanceFromCenter =  math.floor(length(vec2(lx,ly)))
   drawTextRect('Dist to Core: '..distanceFromCenter, rect,0, 0,ColorRGB(0,1,0), 15, 0, 0, 0)
+end
+
+function DistCore.onSectorEntered(playerIndex)
+  DistCore.GetDistance()
+end
+
+function DistCore.GetDistance(Distance)
+  if onClient() then
+    if Distance then
+      distanceFromCenter = Distance
+      return
+    end
+    invokeServerFunction('GetDistance')
+    return
+  end
+  local lx, ly = Sector():getCoordinates()
+  distanceFromCenter =  math.floor(length(vec2(lx,ly)))
+  invokeClientFunction(Player(callingPlayer),'GetDistance',distanceFromCenter)
+end
+
+function DistCore.updateClient(timeStep)
+  AllowMoving = MoveUI.AllowedMoving(player)
+end
+
+function DistCore.getUpdateInterval()
+    return 5
 end
 
 function DistCore.setNewPosition(Position)

@@ -15,14 +15,30 @@ local Title = 'ScrapyardLicenses'
 local Icon = "data/textures/icons/papers.png"
 local Description = "Shows all current Scrapyard Licenses, Displays Alliance Licenses if inside an Alliance Ship."
 local DefaultOptions = {
-  Both = false
+  Both = false,
+  Clickable = false
 }
 local Both_OnOff
+local Clickable_OnOff
+local rect
+local res
+local DefaulPosition
+local player
+local timeout = 0
+local AllowMoving
 
 function ScrapyardLicenses.initialize()
   if onClient() then
-    --Obviously
-    Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+    player = Player()
+
+    player:registerCallback("onPreRenderHud", "onPreRenderHud")
+
+    rect = Rect(vec2(), vec2(400, 100))
+    res = getResolution();
+    --MoveUI - Dirtyredz|David McClain
+    DefaulPosition = vec2(res.x * 0.88, res.y * 0.21)
+    rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
+
   else
     --Lets do some checks on startup/sector entered
     Player():registerCallback("onSectorEntered", "onSectorEntered")
@@ -50,18 +66,29 @@ function ScrapyardLicenses.buildTab(tabbedWindow)
   local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 1)
 
   local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
-  local name = container:createLabel(TextVSplit.left.lower, "Show Both", 16)
 
+  local name = container:createLabel(TextVSplit.left.lower, "Show Both", 16)
   --make sure variables are local to this file only
   Both_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onShowBoth')
+  Both_OnOff.tooltip = 'Shows both Alliance and Players licenses, othewise shows only license for the ship your driving.'
 
+  local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(1),0, 5,0.65)
+  local name = container:createLabel(TextVSplit.left.lower, "Clickable", 16)
+  --make sure variables are local to this file only
+  Clickable_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onClickable')
+  Clickable_OnOff.tooltip = 'Allows you to click the UIs shown licenses. (can cause higher ping rates)'
   --Pass the name of the function, and the checkbox
-  return {onShowBoth = Both_OnOff}
+  return {onShowBoth = Both_OnOff, onClickable = Clickable_OnOff}
 end
 
 function ScrapyardLicenses.onShowBoth(checkbox, value)
   --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
   invokeServerFunction('setNewOptions', Title, {Both = value})
+end
+
+function ScrapyardLicenses.onClickable(checkbox, value)
+  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
+  invokeServerFunction('setNewOptions', Title, {Clickable = value})
 end
 
 --Executed when the Main UI Interface is opened.
@@ -70,6 +97,7 @@ function ScrapyardLicenses.onShowWindow()
   local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
   --Set the checkbox to match the option
   Both_OnOff.checked = LoadedOptions.Both
+  Clickable_OnOff.checked = LoadedOptions.Clickable
 end
 
 function ScrapyardLicenses.TableSize(tabl)
@@ -84,38 +112,22 @@ end
 
 function ScrapyardLicenses.onPreRenderHud()
     if onClient() then
-        local rect = Rect(vec2(), vec2(400, 100))
-        local res = getResolution();
 
-        local DefaulPosition = vec2(res.x * 0.88, res.y * 0.21)
-        rect.position = MoveUI.CheckOverride(Player(), DefaulPosition, OverridePosition, Title)
-
-        OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
-        if OverridePosition and not Moving then
-            invokeServerFunction('setNewPosition', OverridePosition)
+        if OverridePosition then
+          rect.position = OverridePosition
         end
 
-        if MoveUI.AllowedMoving(Player()) then
+        if AllowMoving then
+          OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
+          if OverridePosition and not Moving then
+              invokeServerFunction('setNewPosition', OverridePosition)
+              OverridePosition = nil
+          end
+
+
           drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
           return
         end
-
-        --get the licenses
-        local player = Player()
-        if not player then return end
-        local playerShip = Sector():getEntity(player.craftIndex)
-        if not playerShip then return end
-        local playerAlliance = player.allianceIndex
-
-        local InAllianceShip = false
-        if playerShip then
-          if player.index ~= playerShip.factionIndex then
-            InAllianceShip = true
-          end
-        end
-
-        ScrapyardLicenses.GetFactionValues(player.allianceIndex,player.index)
-        ScrapyardLicenses.sync()
 
         local AllinaceLicensesSize = 0
         if playerAlliance then
@@ -124,8 +136,9 @@ function ScrapyardLicenses.onPreRenderHud()
         local PlayerLicensesSize = ScrapyardLicenses.TableSize(PlayerValues)
 
 
-        local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+        local LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
         local showBoth = LoadedOptions.Both
+        local Clickable = LoadedOptions.Clickable
 
         local NumLicenses = 0
         if showBoth then --if shoiwng both factions
@@ -158,7 +171,9 @@ function ScrapyardLicenses.onPreRenderHud()
                   drawTextRect(prepend..x..' : '..y, HSplit:partition(i), -1, 0, color, 15, 0, 0, 0)
                   drawTextRect(createReadableTimeString(duration), HSplit:partition(i), 1, 0, color, 15, 0, 0, 0)
 
-                  MoveUI.AllowClick(Player(),HSplit:partition(i),(function () GalaxyMap():show(x, y); print('Showing Galaxy:',x,y) end))
+                  if Clickable then
+                    MoveUI.AllowClick(player,HSplit:partition(i),(function () GalaxyMap():show(x, y); print('Showing Galaxy:',x,y) end))
+                  end
                   i = i + 1
               end
           end
@@ -180,7 +195,9 @@ function ScrapyardLicenses.onPreRenderHud()
                     drawTextRect(prepend..x..' : '..y, HSplit:partition(i), -1, 0, color, 15, 0, 0, 0)
                     drawTextRect(createReadableTimeString(duration), HSplit:partition(i), 1, 0, color, 15, 0, 0, 0)
 
-                    MoveUI.AllowClick(Player(),HSplit:partition(i),(function () GalaxyMap():show(x, y); print('Showing Galaxy:',x,y) end))
+                    if Clickable then
+                      MoveUI.AllowClick(player,HSplit:partition(i),(function () GalaxyMap():show(x, y); print('Showing Galaxy:',x,y) end))
+                    end
                     i = i + 1
                 end
             end
@@ -188,6 +205,45 @@ function ScrapyardLicenses.onPreRenderHud()
 
         end
     end
+end
+
+function ScrapyardLicenses.updateClient(timeStep)
+  local lx, ly = Sector():getCoordinates()
+  if PlayerValues[lx] then
+    if PlayerValues[lx][ly] then
+      PlayerValues[lx][ly] = PlayerValues[lx][ly] - 1
+    end
+  end
+  if AllianceValues[lx] then
+    if AllianceValues[lx][ly] then
+      AllianceValues[lx][ly] = AllianceValues[lx][ly] - 1
+    end
+  end
+
+  timeout = timeout + timeStep
+  if timeout > 5 then
+    timeout = 0
+    --get the licenses
+    local playerShip = Sector():getEntity(player.craftIndex)
+    if not playerShip then return end
+    local playerAlliance = player.allianceIndex
+
+    local InAllianceShip = false
+    if playerShip then
+      if player.index ~= playerShip.factionIndex then
+        InAllianceShip = true
+      end
+    end
+
+    ScrapyardLicenses.GetFactionValues(player.allianceIndex,player.index)
+    ScrapyardLicenses.sync()
+
+    AllowMoving = MoveUI.AllowedMoving(player)
+  end
+end
+
+function ScrapyardLicenses.getUpdateInterval()
+    return 1
 end
 
 function ScrapyardLicenses.setNewPosition(Position)
@@ -226,6 +282,7 @@ function ScrapyardLicenses.SetFactionValues(allianceIndex,allianceLicenses,playe
     invokeServerFunction('GetFactionValues',allianceIndex,allianceLicenses,playerLicenses)
     return
   end
+
   if allianceIndex then
     local faction = Faction(allianceIndex)
     faction:setValue("MoveUI#Licenses", MoveUI.Serialize(allianceLicenses))
