@@ -3,51 +3,67 @@ require('mods.MoveUI.scripts.lib.serialize')
 
 MoveUI.Serialize = serialize
 
-function MoveUI.Enabled(player,rect,overide)
-  local AllowMoving = MoveUI.AllowedMoving(player)
-  if AllowMoving then
-    drawBorder(rect, ColorRGB(0.8,0.8,0.8))
+function MoveUI.Enabled(rect,overide)
+  drawBorder(rect, ColorRGB(0.8,0.8,0.8))
 
-    local mouse = Mouse()
-    local Inside = false
-    if mouse.position.x < rect.upper.x and mouse.position.x > rect.lower.x then
-      if mouse.position.y < rect.upper.y and mouse.position.y > rect.lower.y then
-        Inside = true
-      end
-    end
-
-    if Inside and mouse:mousePressed(1) then
-      return mouse.position, true
-    elseif overide then
-      return overide, false
+  local mouse = Mouse()
+  local Inside = false
+  if mouse.position.x < rect.upper.x and mouse.position.x > rect.lower.x then
+    if mouse.position.y < rect.upper.y and mouse.position.y > rect.lower.y then
+      Inside = true
     end
   end
+
+  if Inside and mouse:mousePressed(1) then
+    return mouse.position, true
+  elseif overide then
+    return overide, false
+  end
+
   return false, false
 end
 
 function MoveUI.AllowedMoving(player)
   if not player then return false end
+
   return player:getValue('MoveUI') or false
 end
 
 function MoveUI.CheckOverride(player,default,override,title)
   if override then return override end
 
-  local OldOverride = Player():getValue(title..'_MUI') or 'return nil'
+  OldOverride = Player():getValue(title..'_MUI') or false
 
-  OldOverride = loadstring(OldOverride)()
   if OldOverride then
+    OldOverride = loadstring(OldOverride)()
     return vec2(OldOverride.x,OldOverride.y)
   end
 
   return default
 end
 
+function MoveUI.GetOptions(player,title,defaults)
+  local LoadedOptions = player:getValue(title..'_MUI_Opt') or 'return nil'
+  LoadedOptions = loadstring(LoadedOptions)()
+  if not LoadedOptions then return defaults end
+  return LoadedOptions
+end
+
+function MoveUI.SetOptions(player,title, options)
+  print('SetOptions')
+  if onServer() then
+    player:setValue(title..'_MUI_Opt', MoveUI.Serialize(options))
+  end
+end
+
 function MoveUI.AssignPlayerOverride(player,title,position)
-  local NewPosition = {}
-  NewPosition.x = position.x
-  NewPosition.y = position.y
-  player:setValue(title..'_MUI', MoveUI.Serialize(NewPosition))
+  print('AssignPlayerOverride')
+  if onServer() then
+    local NewPosition = {}
+    NewPosition.x = position.x
+    NewPosition.y = position.y
+    player:setValue(title..'_MUI', MoveUI.Serialize(NewPosition))
+  end
 end
 
 function MoveUI.NicerNumbers(n) -- http://lua-users.org/wiki/FormattingNumbers // credit http://richard.warburton.it
@@ -81,7 +97,7 @@ end
 function MoveUI.AllowClick(player,rect,func)
   local mouse = Mouse()
   local Inside = false
-  local AllowMoving = player:getValue('MoveUI') or false
+  local AllowMoving = MoveUI.AllowedMoving(player)
   if not AllowMoving then
     if mouse.position.x < rect.upper.x and mouse.position.x > rect.lower.x then
       if mouse.position.y < rect.upper.y and mouse.position.y > rect.lower.y then

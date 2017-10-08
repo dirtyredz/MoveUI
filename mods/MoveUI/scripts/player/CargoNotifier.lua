@@ -10,9 +10,36 @@ local OverridePosition
 local Title = 'CargoNotifier'
 local Icon = "data/textures/icons/wooden-crate.png"
 local Description = "Displays warning if you have Dangerous, Stolen, Suspicious, or Illegal Cargo"
+local DefaultOptions = {
+  AF = false
+}
+local AF_OnOff
+local rect
+local res
+local DefaulPosition
+local LoadedOptions
+local player
+local Cargos
+local AllowMoving
 
 function CargoNotifier.initialize(Description)
-  Player():registerCallback("onPreRenderHud", "onPreRenderHud")
+  if onClient() then
+    player = Player()
+
+    player:registerCallback("onPreRenderHud", "onPreRenderHud")
+
+    rect = Rect(vec2(),vec2(170,150))
+    res = getResolution();
+    --MoveUI - Dirtyredz|David McClain
+    DefaulPosition = vec2(res.x * 0.34,res.y * 0.07)
+    rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
+
+    LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+
+    local PlayerShip = player.craft
+    if not PlayerShip then return end
+    Cargos = PlayerShip:getCargos()
+  end
 end
 
 function CargoNotifier.buildTab(tabbedWindow)
@@ -29,37 +56,64 @@ function CargoNotifier.buildTab(tabbedWindow)
   TopMessage.size = vec2(FileTab.size.x - 40, 20)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
+
+  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 1)
+
+  local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
+  local name = container:createLabel(TextVSplit.left.lower, "Allow Flashing", 16)
+
+  --make sure variables are local to this file only
+  AF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowFlashing')
+  AF_OnOff.tooltip = 'Will Flash when dangerous cargo is detected.'
+
+  --Pass the name of the function, and the checkbox
+  return {onAllowFlashing = AF_OnOff}
+end
+
+function CargoNotifier.onAllowFlashing(checkbox, value)
+  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
+  invokeServerFunction('setNewOptions', Title, {AF = value})
+end
+
+--Executed when the Main UI Interface is opened.
+function CargoNotifier.onShowWindow()
+  --Get the player options
+  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  --Set the checkbox to match the option
+  AF_OnOff.checked = LoadedOptions.AF
 end
 
 function CargoNotifier.onPreRenderHud()
   if onClient() then
 
-    local PlayerShip = Player().craft
-    if not PlayerShip then return end
-    local Cargos = PlayerShip:getCargos()
+    if not Cargos then return end
+
     local SeenIllegal = false
     local SeenStolen = false
     local SeenDangerous = false
     local SeenSuspicious = false
 
-    local rect = Rect(vec2(),vec2(170,150))
-    local res = getResolution();
-    --MoveUI - Dirtyredz|David McClain
-    local DefaulPosition = vec2(res.x * 0.34,res.y * 0.07)
-    rect.position = MoveUI.CheckOverride(Player(),DefaulPosition,OverridePosition,Title)
-
-    OverridePosition, Moving = MoveUI.Enabled(Player(), rect, OverridePosition)
-    if OverridePosition and not Moving then
-        invokeServerFunction('setNewPosition', OverridePosition)
+    if OverridePosition then
+      rect.position = OverridePosition
     end
 
-    if MoveUI.AllowedMoving(Player()) then
+    if AllowMoving then
+      OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
+      if OverridePosition and not Moving then
+          invokeServerFunction('setNewPosition', OverridePosition)
+          OverridePosition = nil
+      end
+
+
       drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
       return
     end
     --MoveUI - Dirtyredz|David McClain
 
     local HSplit = UIHorizontalMultiSplitter(rect, 10, 10, 3)
+
+    --Flashing Option
+    if os.time() % 2 == 0 and LoadedOptions.AF then return end
 
     for TradingGood,index in pairs(Cargos) do
       if TradingGood.illegal and not SeenIllegal then
@@ -84,6 +138,18 @@ function CargoNotifier.onPreRenderHud()
       end
     end
   end
+end
+
+function CargoNotifier.updateClient(timeStep)
+  LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+  local PlayerShip = player.craft
+  if not PlayerShip then return end
+  Cargos = PlayerShip:getCargos()
+  AllowMoving = MoveUI.AllowedMoving(player)
+end
+
+function CargoNotifier.getUpdateInterval()
+    return 5
 end
 
 function CargoNotifier.setNewPosition(Position)

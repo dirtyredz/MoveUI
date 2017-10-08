@@ -55,6 +55,11 @@ He and I infact started work on this together, but he beat me to it.
 So I took his work and incorperated my work in to his.
 Thxs again!!
 
+## PVPSector
+This UI will display when you are inside a Player Enabled/Disabled Sector.
+
+![alt text](https://imgur.com/S4SPW7R.png)
+
 Remember with all these UI's they can be Moved, Enabled, Disabled, or even restricted to specific situations (coding skill required)
 
 ![alt text](https://imgur.com/oy5WRlG.png)
@@ -86,6 +91,10 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 ## Downloads
 ___
+https://github.com/dirtyredz/MoveUI/releases/download/1.3.0/MoveUI.v1.3.0.zip
+
+https://github.com/dirtyredz/MoveUI/releases/download/1.2.1/MoveUI.v1.2.1.zip
+
 https://github.com/dirtyredz/MoveUI/releases/download/1.2.0/MoveUI.v1.2.0.zip
 
 https://github.com/dirtyredz/MoveUI/releases/download/1.1.0/MoveUI.v1.1.0.zip
@@ -95,6 +104,19 @@ https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip
 
 ## Changelog
 ___
+1.3.0
+  --Every UI now utilizes delayed server/client communication
+      Will help tremendously with any high ping issues.
+      This will also cause a 1-5 sec delay when activating Movement of the UI's
+  --Added PVPSector, will show if a sector has pvp damaged Enabled/Disabled.
+  --ScrapyardLicenses now has the option to Allow for Clicking to show the sector on the map.
+  --ScrapyardLicenses now has the option to show both alliance/player licenses at the same time.
+  --CargoNotifier now has the option to have the UI Flash
+  --ObjectDetector now has the option to have the UI Flash
+
+1.2.1
+  -Fixed Entity Creation bug error.
+
 1.2.0
   -Added ObjectDetector
       Special Thxs to dnightmare, we were apprently working on this at the same time.
