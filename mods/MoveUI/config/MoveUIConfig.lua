@@ -1,6 +1,6 @@
 local MoveUIConfig = {}
 MoveUIConfig.Author = "Dirtyredz"
-MoveUIConfig.version = "[1.3.0]"
+MoveUIConfig.version = "[1.3.1]"
 MoveUIConfig.ModName = "[MoveUI]"
 MoveUIConfig.HudList = {}
 
@@ -24,5 +24,6 @@ MoveUIConfig.AddUI("CargoNotifier", true)
 MoveUIConfig.AddUI("ScrapyardLicenses", true)
 MoveUIConfig.AddUI("ObjectDetector", true)
 MoveUIConfig.AddUI("PVPSector", true)
+MoveUIConfig.AddUI("Clock")
 
 return MoveUIConfig
