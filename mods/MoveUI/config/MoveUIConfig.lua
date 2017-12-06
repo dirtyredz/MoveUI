@@ -38,6 +38,6 @@ MoveUIConfig.AddUI("ScrapyardLicenses", false)
 MoveUIConfig.AddUI("ObjectDetector", false)
 MoveUIConfig.AddUI("PVPSector", false)
 MoveUIConfig.AddUI("FactionNotifier", false)
---MoveUIConfig.AddUI("TargetingData", false)
+MoveUIConfig.AddUI("Clock")
 
 return MoveUIConfig
