@@ -1,3 +1,9 @@
+1.4.0
+  --Added Clock UI, Thxs  DNightmare
+  --Added FactionNotifier UI
+  --Added ability to delete scrapyard licenses data from the UI
+  --Removed Vanilla files from zip, follow installation instructions please
+  
 1.3.0
   --Every UI now utilizes delayed server/client communication
       Will help tremendously with any high ping issues.
@@ -10,7 +16,7 @@
 
 1.2.1
   -Fixed Entity Creation bug error.
-  
+
 1.2.0
   -Added ObjectDetector
       Special Thxs to dnightmare, we were apprently working on this at the same time.

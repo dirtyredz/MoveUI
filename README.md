@@ -66,22 +66,32 @@ Remember with all these UI's they can be Moved, Enabled, Disabled, or even restr
 
 I look forward to everyone feedback, and I welcome ideas for more UI's that I can add.
 
+## FactionNotifier
+This UI will display the factions that are present in the sector.
+The names of the factions will be colored in relation to your relationship status with that faction.
+
+If you have any one of the 4 cargo licenses for that faction the UI will display the license you have for that faction to the right of thier name. allowing you to quickly identify if youll be safe to transport goods in the sector.
+
+##Clock
+Simple UI to display your computers current time.
+
+SPECIAL THANKS AND CREDIT: dnightmare
+
 ## INSTALLATION
 ___
 1. Download the zip file
 2. Drag and Drop the contents into the /Avorion/ directory,
 
-All files are inside their own /mods/ directory except for Two file.
-server.lua,
-scrapyard.lua
-
-IF YOU HAVE AN ALTERED SERVER.LUA DO NOT COPY THIS FILE OVER
-you'll want to open the file and copy over the ONE LINE over to your server.lua
-
-scrapyard.lua has only ONE line added to the vanilla file at the bottom.
-you can either copy the file over OR place this one line at the bottom of the file.
+3. Place this line at the bottom of this file: data/scripts/entity/merchants/scrapyard.lua
 
     if not pcall(require, 'mods.MoveUI.scripts.entity.merchants.scrapyard') then print('Mod: MoveUI, failed to extend scrapyard.lua!') end
+
+4. Place these two lines at the bottom of this file: data/scripts/server/server.lua
+
+
+    local s, b = pcall(require, 'mods/MoveUI/scripts/server/server')
+    if s then if b.onPlayerLogIn then local a = onPlayerLogIn; onPlayerLogIn = function(c) a(c); b.onPlayerLogIn(c); end end else print(b); end
+
 
 ## Note
 ___
@@ -91,6 +101,8 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 ## Downloads
 ___
+https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip
+
 https://github.com/dirtyredz/MoveUI/releases/download/1.3.0/MoveUI.v1.3.0.zip
 
 https://github.com/dirtyredz/MoveUI/releases/download/1.2.1/MoveUI.v1.2.1.zip
@@ -104,6 +116,12 @@ https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip
 
 ## Changelog
 ___
+1.4.0
+  --Added Clock UI, Thxs  DNightmare
+  --Added FactionNotifier UI
+  --Added ability to delete scrapyard licenses data from the UI
+  --Removed Vanilla files from zip, follow installation instructions please
+  
 1.3.0
   --Every UI now utilizes delayed server/client communication
       Will help tremendously with any high ping issues.
