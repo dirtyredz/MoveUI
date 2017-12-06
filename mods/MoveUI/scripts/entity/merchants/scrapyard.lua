@@ -9,12 +9,12 @@ function Scrapyard.updateServer(timeStep)
     --local licenses = {}
 
     local x,y = Sector():getCoordinates()
-    for playerIndex,duration in pairs(licenses) do
-        local faction = Faction(playerIndex)
+    for factionIndex,duration in pairs(licenses) do
+        local faction = Faction(factionIndex)
 
         if faction.isPlayer or faction.isAlliance then
             -- read current or init new
-            local pLicenses = Scrapyard.GetPlayerLicense(playerIndex)
+            local pLicenses = Scrapyard.GetFactionLicense(factionIndex)
             local time = round(duration - timeStep)
             if time <= 0 then
               time = nil
@@ -28,10 +28,10 @@ function Scrapyard.updateServer(timeStep)
     Scrapyard.updateServerOld(timeStep)
 end
 
-function Scrapyard.GetPlayerLicense(playerIndex)
+function Scrapyard.GetFactionLicense(factionIndex)
 
     local x,y = Sector():getCoordinates()
-    local faction = Faction(playerIndex)
+    local faction = Faction(factionIndex)
 
     local licenses
     local PlayerLicenses = faction:getValue("MoveUI#Licenses") or false

@@ -56,6 +56,13 @@ function MoveUI.SetOptions(player,title, options)
   end
 end
 
+function MoveUI.ClearValue(factionIndex, ValueName)
+  print('ClearValue')
+  if onServer() then
+    Faction(factionIndex):setValue(ValueName,nil)
+  end
+end
+
 function MoveUI.AssignPlayerOverride(player,title,position)
   print('AssignPlayerOverride')
   if onServer() then

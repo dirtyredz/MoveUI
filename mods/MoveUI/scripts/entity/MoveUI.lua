@@ -98,12 +98,17 @@ function MoveUIOptions.initUI()
           if UIFile.onShowWindow then table.insert(ShowWindowFuncs,UIFile.onShowWindow) end
 
           --Build the tab using the UI's buildTab function
-          local InterfaceFunctions = UIFile.buildTab(tabbedWindow) or {}
+          local InterfaceFunctions = UIFile.buildTab(tabbedWindow) or {checkbox={},button={}}
           --The UI's buildTab option will return a table of functions to be added to the MoveUIOptions table
           --This is necassary since string callback functions search for the function inside this namespace
-          for FuncName,CheckBox in pairs(InterfaceFunctions) do
+          for FuncName,CheckBox in pairs(InterfaceFunctions.checkbox) do
             --prepend it with the filename so the function name is always unique
             CheckBox.onCheckedFunction = HudFile.FileName..'_'..FuncName
+            MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
+          end
+          for FuncName,button in pairs(InterfaceFunctions.button) do
+            --prepend it with the filename so the function name is always unique
+            button.onPressedFunction = HudFile.FileName..'_'..FuncName
             MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
           end
         end
@@ -112,8 +117,15 @@ function MoveUIOptions.initUI()
 end
 
 --Set the UI's Options to the players data
-function MoveUIOptions.setNewOptions(Title,Options)
-  MoveUI.SetOptions(Player(),Title,Options)
+function MoveUIOptions.setNewOptions(Title,Options,PlayerIndex)
+  MoveUI.SetOptions(Player(PlayerIndex),Title,Options)
+end
+
+--Set the UI's Options to the players data
+function MoveUIOptions.clearValue(FactionIndex,ValueName,PlayerIndex)
+  MoveUI.ClearValue(FactionIndex,ValueName)
+  Player(PlayerIndex):removeScript('mods/MoveUI/scripts/player/ScrapyardLicenses.lua')
+  Player(PlayerIndex):addScript('mods/MoveUI/scripts/player/ScrapyardLicenses.lua')
 end
 
 function MoveUIOptions.onShowWindow()

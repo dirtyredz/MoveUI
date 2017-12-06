@@ -70,12 +70,12 @@ function ObjectDetector.buildTab(tabbedWindow)
   AF_OnOff.tooltip = 'Will Flash when an object is detected.'
 
   --Pass the name of the function, and the checkbox
-  return {onAllowFlashing = AF_OnOff}
+  return {checkbox = {onAllowFlashing = AF_OnOff}, button = {}}
 end
 
 function ObjectDetector.onAllowFlashing(checkbox, value)
   --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
-  invokeServerFunction('setNewOptions', Title, {AF = value})
+  invokeServerFunction('setNewOptions', Title, {AF = value},Player().index)
 end
 
 --Executed when the Main UI Interface is opened.
