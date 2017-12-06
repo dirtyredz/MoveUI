@@ -72,7 +72,7 @@ The names of the factions will be colored in relation to your relationship statu
 
 If you have any one of the 4 cargo licenses for that faction the UI will display the license you have for that faction to the right of thier name. allowing you to quickly identify if youll be safe to transport goods in the sector.
 
-##Clock
+## Clock
 Simple UI to display your computers current time.
 
 SPECIAL THANKS AND CREDIT: dnightmare
@@ -121,7 +121,7 @@ ___
   --Added FactionNotifier UI
   --Added ability to delete scrapyard licenses data from the UI
   --Removed Vanilla files from zip, follow installation instructions please
-  
+
 1.3.0
   --Every UI now utilizes delayed server/client communication
       Will help tremendously with any high ping issues.
