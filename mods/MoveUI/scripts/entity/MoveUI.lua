@@ -36,7 +36,7 @@ function MoveUIOptions.initUI()
     local NumUIs = #MoveUIOptions.HudList or 1
 
     local res = getResolution()
-    local size = vec2((300 + (NumUIs*30)), (NumUIs*50)*2)
+    local size = vec2((300 + (NumUIs*30)), (NumUIs*30)*2)
 
     local menu = ScriptUI()
     MainWindow = menu:createWindow(Rect(res * 0.5 - size * 0.5, res * 0.5 + size * 0.5));
@@ -55,23 +55,23 @@ function MoveUIOptions.initUI()
     --local container = MainWindow:createContainer(Rect(vec2(0, 0), size));
 
     --split it 50/50
-    local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), MainTab.size), 0, 0, 0.5)
+    local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), MainTab.size), 0, 0, 0.3)
     --local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), size), 0, 0, 0.5)
 
     --Top Message
-    local TopHSplit = UIHorizontalSplitter(mainSplit.top, 0, 0, 0.5)
+    local TopHSplit = UIHorizontalSplitter(mainSplit.top, 0, 0, 0.4)
     local TopMessage = container:createLabel(TopHSplit.top.lower + vec2(10,10), 'MoveUI controller, enable and disable UIs', 16)
 
     --All UI's
     local MiddleHSplit = UIHorizontalSplitter(TopHSplit.bottom, 0, 0, 0.5)
 
     --Move All
-    local MoveAllVSplit = UIVerticalSplitter(MiddleHSplit.top,0, 5,0.65)
+    local MoveAllVSplit = UIVerticalSplitter(MiddleHSplit.top,0, 0,0.65)
     local name = container:createLabel(MoveAllVSplit.left.lower, 'Enable UI Movement', 16)
     MoveAllCheckbox = container:createCheckBox(MoveAllVSplit.right, "On / Off", 'onAllowUIMovement')
 
     --Reset All
-    local ResetVSplit = UIVerticalSplitter(MiddleHSplit.bottom,0, 5,0.65)
+    local ResetVSplit = UIVerticalSplitter(MiddleHSplit.bottom,0, 0,0.5)
     local name = container:createLabel(ResetVSplit.left.lower, 'Reset All UI Positions', 16)
     local OnOff = container:createButton(ResetVSplit.right, "Reset UIs", 'onResetUIs')
 
@@ -80,9 +80,9 @@ function MoveUIOptions.initUI()
     for index,HudFile in pairs(MoveUIOptions.HudList) do
       if HudFile.FileName then
         local rect = hsplit:partition(index)
-        local TextVSplit = UIVerticalSplitter(rect,0, 5,0.65)
+        local TextVSplit = UIVerticalSplitter(rect,0, 3,0.65)
 
-        local name = container:createLabel(TextVSplit.left.lower, HudFile.FileName, 16)
+        local name = container:createLabel(TextVSplit.left.lower, HudFile.FileName, 14)
         local OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onEnableUI')
 
         table.insert(UILabels,{name = name, hudIndex = index, OnOff = OnOff, index = OnOff.index})
@@ -98,27 +98,36 @@ function MoveUIOptions.initUI()
           if UIFile.onShowWindow then table.insert(ShowWindowFuncs,UIFile.onShowWindow) end
 
           --Build the tab using the UI's buildTab function
-          local InterfaceFunctions = UIFile.buildTab(tabbedWindow) or {checkbox={},button={}}
+          local InterfaceFunctions = UIFile.buildTab(tabbedWindow) or {checkbox={},button={},slider={},textBox={}}
           --The UI's buildTab option will return a table of functions to be added to the MoveUIOptions table
           --This is necassary since string callback functions search for the function inside this namespace
+          if not InterfaceFunctions.checkbox then InterfaceFunctions.checkbox = {} end
           for FuncName,CheckBox in pairs(InterfaceFunctions.checkbox) do
             --prepend it with the filename so the function name is always unique
             CheckBox.onCheckedFunction = HudFile.FileName..'_'..FuncName
             MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
           end
+          if not InterfaceFunctions.button then InterfaceFunctions.button = {} end
           for FuncName,button in pairs(InterfaceFunctions.button) do
             --prepend it with the filename so the function name is always unique
             button.onPressedFunction = HudFile.FileName..'_'..FuncName
             MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
           end
+          if not InterfaceFunctions.slider then InterfaceFunctions.slider = {} end
+          for FuncName,slider in pairs(InterfaceFunctions.slider) do
+            --prepend it with the filename so the function name is always unique
+            slider.onChangedFunction = HudFile.FileName..'_'..FuncName
+            MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
+          end
+          if not InterfaceFunctions.textBox then InterfaceFunctions.textBox = {} end
+          for FuncName,textBox in pairs(InterfaceFunctions.textBox) do
+            --prepend it with the filename so the function name is always unique
+            textBox.onTextChangedFunction = HudFile.FileName..'_'..FuncName
+            MoveUIOptions[HudFile.FileName..'_'..FuncName] = UIFile[FuncName]
+          end
         end
       end
     end
-end
-
---Set the UI's Options to the players data
-function MoveUIOptions.setNewOptions(Title,Options,PlayerIndex)
-  MoveUI.SetOptions(Player(PlayerIndex),Title,Options)
 end
 
 --Set the UI's Options to the players data
@@ -152,21 +161,15 @@ function MoveUIOptions.initialize()
 end
 
 function MoveUIOptions.onResetUIs()
-    if onClient() then
-      invokeServerFunction('onResetUIs')
-      return
-    end
-    local player = Player()
-    local PlayerValues = player:getValues()
-    for k, v in pairs(PlayerValues) do
-      if string.match(k, "_MUI") then
-        player:setValue(k,nil)
-      end
+    MoveUI.SaveVariables({})
+    for _,cb in pairs(UILabels) do
+        if cb.OnOff.checked then print(cb.name) end
     end
 end
 
 function MoveUIOptions.onAllowUIMovement(checkbox, value)
     if onClient() then
+      MoveUI.SetVariable("AllowMoving", value)
       invokeServerFunction('onAllowUIMovement',nil,value)
       return
     end

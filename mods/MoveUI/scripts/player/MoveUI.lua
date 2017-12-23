@@ -35,6 +35,8 @@ end
 
 function MoveUILoader.onShipChanged(playerIndex, craftIndex)
   if Player().index ~= playerIndex then return end  --WTF, why is this function run against every player?
+  --Verify Entity Exsist
+  if not Sector():getEntity(Player().craftIndex) then return end
   local ship = Entity(craftIndex) --assign the ship entity so we can protect it later
   if not ship then return end
   local faction = Faction(ship.factionIndex)

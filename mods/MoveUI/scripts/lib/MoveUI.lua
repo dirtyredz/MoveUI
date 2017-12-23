@@ -23,37 +23,56 @@ function MoveUI.Enabled(rect,overide)
   return false, false
 end
 
-function MoveUI.AllowedMoving(player)
-  if not player then return false end
-
-  return player:getValue('MoveUI') or false
+function MoveUI.AllowedMoving()
+    local tbl, err = MoveUI.LoadVariables()
+    if not tbl then return false end
+    return tbl.AllowMoving or false
 end
 
 function MoveUI.CheckOverride(player,default,override,title)
   if override then return override end
 
-  OldOverride = Player():getValue(title..'_MUI') or false
+  OldOverride = MoveUI.GetVariable(title,default) or false
 
   if OldOverride then
-    OldOverride = loadstring(OldOverride)()
     return vec2(OldOverride.x,OldOverride.y)
   end
 
   return default
 end
 
-function MoveUI.GetOptions(player,title,defaults)
-  local LoadedOptions = player:getValue(title..'_MUI_Opt') or 'return nil'
-  LoadedOptions = loadstring(LoadedOptions)()
-  if not LoadedOptions then return defaults end
-  return LoadedOptions
+function MoveUI.SetVariable(title,value)
+    local tbl, err = MoveUI.LoadVariables()
+    if err then print(err) end
+    tbl = tbl or {}
+    tbl[title] = value
+    MoveUI.SaveVariables(tbl)
 end
 
-function MoveUI.SetOptions(player,title, options)
-  print('SetOptions')
-  if onServer() then
-    player:setValue(title..'_MUI_Opt', MoveUI.Serialize(options))
-  end
+function MoveUI.GetVariable(title,defaults)
+    local tbl, err = MoveUI.LoadVariables()
+    if err then
+        print(err)
+        MoveUI.SetVariable(title,defaults)
+    end
+    tbl = tbl or {}
+    return tbl[title] or defaults
+end
+
+function MoveUI.LoadVariables()
+    local file,err = io.open( "MoveUIVariables.lua", "r" )
+    if err then return _,err end
+    local rtn = loadstring(file:read("*a"))()
+    file:close()
+    return rtn, err
+end
+
+function MoveUI.SaveVariables(tbl)
+    local file,err = io.open( "MoveUIVariables.lua", "wb" )
+    if err then return err end
+    file:write( MoveUI.Serialize(tbl) )
+    file:close()
+    return true
 end
 
 function MoveUI.ClearValue(factionIndex, ValueName)
@@ -63,14 +82,12 @@ function MoveUI.ClearValue(factionIndex, ValueName)
   end
 end
 
-function MoveUI.AssignPlayerOverride(player,title,position)
-  print('AssignPlayerOverride')
-  if onServer() then
+function MoveUI.AssignPlayerOverride(title,position)
+    print('AssignPlayerOverride')
     local NewPosition = {}
     NewPosition.x = position.x
     NewPosition.y = position.y
-    player:setValue(title..'_MUI', MoveUI.Serialize(NewPosition))
-  end
+    MoveUI.SetVariable(title,{x = position.x, y = position.y})
 end
 
 function MoveUI.NicerNumbers(n) -- http://lua-users.org/wiki/FormattingNumbers // credit http://richard.warburton.it
@@ -104,8 +121,8 @@ end
 function MoveUI.AllowClick(player,rect,func)
   local mouse = Mouse()
   local Inside = false
-  local AllowMoving = MoveUI.AllowedMoving(player)
-  if not AllowMoving then
+  --local AllowMoving = MoveUI.AllowedMoving()
+  --if not AllowMoving then
     if mouse.position.x < rect.upper.x and mouse.position.x > rect.lower.x then
       if mouse.position.y < rect.upper.y and mouse.position.y > rect.lower.y then
         Inside = true
@@ -116,7 +133,7 @@ function MoveUI.AllowClick(player,rect,func)
     if Inside and mouse:mouseDown(1) then
       func()
     end
-  end
+  --end
 end
 
 return MoveUI

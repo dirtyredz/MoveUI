@@ -74,10 +74,9 @@ function DistCore.onPreRenderHud()
   if AllowMoving then
     OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
     if OverridePosition and not Moving then
-        invokeServerFunction('setNewPosition', OverridePosition)
+        MoveUI.AssignPlayerOverride(Title,OverridePosition)
         OverridePosition = nil
     end
-
 
     drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
     return
@@ -105,15 +104,11 @@ function DistCore.GetDistance(Distance)
 end
 
 function DistCore.updateClient(timeStep)
-  AllowMoving = MoveUI.AllowedMoving(player)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function DistCore.getUpdateInterval()
     return 5
-end
-
-function DistCore.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
 
 return DistCore

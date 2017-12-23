@@ -3,7 +3,7 @@ MoveUIConfig.Author = "Dirtyredz"
 MoveUIConfig.ModName = "[MoveUI]"
 
 MoveUIConfig.version = {
-    major=1, minor=4, patch = 0,
+    major=2, minor=1, patch = 0,
     string = function()
         return  Config.version.major .. '.' ..
                 Config.version.minor .. '.' ..
@@ -31,13 +31,15 @@ function MoveUIConfig.AddUI(FileName, ForceStartEnabled, ForceRemove, Restrictio
 
 end
 
-MoveUIConfig.AddUI("ResourcesUI", true)
+MoveUIConfig.AddUI("ResourcesUI")
 MoveUIConfig.AddUI("DistCore", true)
 MoveUIConfig.AddUI("CargoNotifier", true)
-MoveUIConfig.AddUI("ScrapyardLicenses", false)
+MoveUIConfig.AddUI("ScrapyardLicenses", true)
 MoveUIConfig.AddUI("ObjectDetector", false)
 MoveUIConfig.AddUI("PVPSector", false)
 MoveUIConfig.AddUI("FactionNotifier", false)
-MoveUIConfig.AddUI("Clock")
+MoveUIConfig.AddUI("Clock", true)
+MoveUIConfig.AddUI("PowerSystems", false)
+MoveUIConfig.AddUI("Notepad", false)
 
 return MoveUIConfig

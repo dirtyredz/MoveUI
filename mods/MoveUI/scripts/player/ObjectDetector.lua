@@ -26,6 +26,7 @@ local DefaulPosition
 local LoadedOptions
 local AllowMoving
 local player
+local ScanSectorTimer = 5
 
 function ObjectDetector.initialize()
   if onClient() then
@@ -33,7 +34,7 @@ function ObjectDetector.initialize()
 
     player:registerCallback("onPreRenderHud", "onPreRenderHud")
     ObjectDetector.detect()
-    LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+    LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
 
     rect = Rect(vec2(),vec2(320,20))
     res = getResolution();
@@ -41,8 +42,6 @@ function ObjectDetector.initialize()
     DefaulPosition = vec2(res.x * 0.5,res.y * 0.90)
     rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
   end
-
-  Player():registerCallback("onSectorEntered", "onSectorEntered")
 end
 
 function ObjectDetector.buildTab(tabbedWindow)
@@ -74,14 +73,15 @@ function ObjectDetector.buildTab(tabbedWindow)
 end
 
 function ObjectDetector.onAllowFlashing(checkbox, value)
-  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
-  invokeServerFunction('setNewOptions', Title, {AF = value},Player().index)
+
+  --invokeServerFunction('setNewOptions', Title, {AF = value},Player().index)
+  MoveUI.SetVariable(Title.."_Opt", {AF = value})
 end
 
 --Executed when the Main UI Interface is opened.
 function ObjectDetector.onShowWindow()
   --Get the player options
-  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
   --Set the checkbox to match the option
   AF_OnOff.checked = LoadedOptions.AF
 end
@@ -99,7 +99,7 @@ function ObjectDetector.onPreRenderHud()
     if AllowMoving then
       OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
       if OverridePosition and not Moving then
-          invokeServerFunction('setNewPosition', OverridePosition)
+          MoveUI.AssignPlayerOverride(Title,OverridePosition)
           OverridePosition = nil
       end
 
@@ -138,25 +138,20 @@ function ObjectDetector.onPreRenderHud()
 end
 
 function ObjectDetector.updateClient(timeStep)
-  ObjectDetector.detect()
-  LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
-  AllowMoving = MoveUI.AllowedMoving(player)
+  ScanSectorTimer = ScanSectorTimer - timeStep
+  if ScanSectorTimer < 0 then
+      ObjectDetector.detect()
+      ScanSectorTimer = 5
+  end
+  LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function ObjectDetector.getUpdateInterval()
-    return 5
-end
-
-function ObjectDetector.onSectorEntered(playerIndex)
-  ObjectDetector.detect()
+    return 1
 end
 
 function ObjectDetector.detect()
-  if onServer() then
-    invokeClientFunction(Player(playerIndex), 'detect')
-    return
-  end
-
   asteroids = 0
   wrecks = 0
   stashes = 0
@@ -183,10 +178,6 @@ function ObjectDetector.detect()
       end
     end
   end
-end
-
-function ObjectDetector.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
 
 return ObjectDetector

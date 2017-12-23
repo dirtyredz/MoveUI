@@ -48,7 +48,7 @@ function PVPSector.onPreRenderHud()
   if AllowMoving then
     OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
     if OverridePosition and not Moving then
-        invokeServerFunction('setNewPosition', OverridePosition)
+        MoveUI.AssignPlayerOverride(Title,OverridePosition)
         OverridePosition = nil
     end
 
@@ -89,15 +89,11 @@ function PVPSector.GetPVPStatus(Message)
 end
 
 function PVPSector.updateClient(timeStep)
-  AllowMoving = MoveUI.AllowedMoving(player)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function PVPSector.getUpdateInterval()
-  return 5
-end
-
-function PVPSector.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
+  return 1
 end
 
 return PVPSector

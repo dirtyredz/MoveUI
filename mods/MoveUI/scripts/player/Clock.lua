@@ -53,7 +53,7 @@ function Clock.onPreRenderHud()
   if AllowMoving then
     OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
     if OverridePosition and not Moving then
-        invokeServerFunction('setNewPosition', OverridePosition)
+        MoveUI.AssignPlayerOverride(Title,OverridePosition)
         OverridePosition = nil
     end
     drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
@@ -94,15 +94,11 @@ function Clock.updateClient(timeStep)
     end
     currentTime = string.format("%02d:%02d:%02d", currentDate.hour, currentDate.min, currentDate.sec)
   end
-  AllowMoving = MoveUI.AllowedMoving(player)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function Clock.getUpdateInterval()
   return 1
-end
-
-function Clock.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
 
 return Clock

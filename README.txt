@@ -83,11 +83,10 @@ SPECIAL THANKS AND CREDIT: dnightmare
 2. Drag and Drop the contents into the /Avorion/ directory,
 
 3. Place this line at the bottom of this file: data/scripts/entity/merchants/scrapyard.lua
-
     [code]if not pcall(require, 'mods.MoveUI.scripts.entity.merchants.scrapyard') then print('Mod: MoveUI, failed to extend scrapyard.lua!') end[/code]
 
-4. Place these two lines at the bottom of this file: data/scripts/server/server.lua
 
+4. Place these two lines at the bottom of this file: data/scripts/server/server.lua
     [code]
         local s, b = pcall(require, 'mods/MoveUI/scripts/server/server')
         if s then if b.onPlayerLogIn then local a = onPlayerLogIn; onPlayerLogIn = function(c) a(c); b.onPlayerLogIn(c); end end else print(b); end
@@ -102,10 +101,12 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip]MoveUI v1.4.0[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.0/MoveUI.v2.1.0.zip]MoveUI v2.1.0[/url]
 
 Older Downloads
 [spoiler]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip]MoveUI v1.4.0[/url]
+
 [url=https://github.com/dirtyredz/MoveUI/releases/download/1.3.0/MoveUI.v1.3.0.zip]MoveUI v1.3.0[/url]
 
 [url=https://github.com/dirtyredz/MoveUI/releases/download/1.2.1/MoveUI.v1.2.1.zip]MoveUI v1.2.1[/url]
@@ -119,6 +120,13 @@ Older Downloads
 
 [b][size=24pt]Changelog[/size][/b]
 [hr]
+2.1.0
+  --Added PowerSystems UI
+  --Added Notepad UI
+  --Adjusted core moveui to use local data storage, increases client and server performance.
+  --Decreased the amount of space used by FactionNotifier
+  --Dynamic UI's now shrink and grow depending on the individual UI.
+
 1.4.0
   --Added Clock UI, Thxs  DNightmare
   --Added FactionNotifier UI

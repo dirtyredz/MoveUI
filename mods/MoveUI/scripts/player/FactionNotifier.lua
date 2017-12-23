@@ -16,9 +16,11 @@ local Title = 'FactionNotifier'
 local Icon = "data/textures/icons/freedom-dove.png"
 local Description = "Will display details of the owning faction of your current sector."
 local DefaultOptions = {
-  PF = true
+  PF = true,
+  FS = 15
 }
 local PF_OnOff
+local FS_Slide
 
 
 local FactionData
@@ -27,6 +29,7 @@ local res
 local DefaulPosition
 local LoadedOptions
 local AllowMoving
+local ScanSectorTimer = 5
 local player
 local RelationColors = {
     {Relation = -100000, R = 0.5, G = 0, B = 0},
@@ -57,9 +60,9 @@ function FactionNotifier.initialize()
 
     player:registerCallback("onPreRenderHud", "onPreRenderHud")
     FactionNotifier.detect()
-    LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+    LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
 
-    rect = Rect(vec2(),vec2(350,80))
+    rect = Rect(vec2(),vec2(300,20))
     res = getResolution();
     --MoveUI - Dirtyredz|David McClain
     DefaulPosition = vec2(res.x * 0.73,res.y * 0.85)
@@ -82,73 +85,94 @@ function FactionNotifier.buildTab(tabbedWindow)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 
-  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 1)
+  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 5)
 
   local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
   local name = container:createLabel(TextVSplit.left.lower, "Show Present Factions", 16)
-
   --make sure variables are local to this file only
   PF_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onAllowPresentFactions')
   PF_OnOff.tooltip = 'Will Show the names of other factions in sector.'
 
+  local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(1),0, 5,0.65)
+  local name = container:createLabel(TextVSplit.left.lower, "Font Size", 16)
+  --make sure variables are local to this file only
+  FS_Slide = container:createSlider(TextVSplit.right, 10, 30, 20, "Font Size", 'onChangeFont')
+  FS_Slide.tooltip = 'Changes the Font size and rect size.'
+
   --Pass the name of the function, and the checkbox
-  return {checkbox = {onAllowPresentFactions = PF_OnOff}, button = {}}
+  return {checkbox = {onAllowPresentFactions = PF_OnOff}, button = {}, slider = {onChangeFont = FS_Slide}}
+end
+
+function FactionNotifier.onChangeFont(slider)
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  MoveUI.SetVariable(Title.."_Opt", {FS = slider.value, PF = LoadedOptions.PF})
 end
 
 function FactionNotifier.onAllowPresentFactions(checkbox, value)
-  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
-  invokeServerFunction('setNewOptions', Title, {PF = value},Player().index)
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  MoveUI.SetVariable(Title.."_Opt", {PF = value, FS = LoadedOptions.FS})
 end
 
 --Executed when the Main UI Interface is opened.
 function FactionNotifier.onShowWindow()
   --Get the player options
-  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
   --Set the checkbox to match the option
   PF_OnOff.checked = LoadedOptions.PF
+  FS_Slide:setValueNoCallback(LoadedOptions.FS)
 end
 
 
 function FactionNotifier.onPreRenderHud()
   if onClient() then
+    if not LoadedOptions.FS then LoadedOptions.FS = 15 end
+    local NewRect = Rect(rect.lower,rect.upper + vec2(22 * (LoadedOptions.FS - 10),8 * (LoadedOptions.FS - 10)))
+
+    if FactionData then
+        local Length = #FactionData.OtherFactions
+        Length = Length * 15
+        NewRect = Rect(rect.lower,rect.upper + vec2(22 * (LoadedOptions.FS - 10),Length + 8 * (LoadedOptions.FS - 10)))
+    end
+
 
     if OverridePosition then
       rect.position = OverridePosition
     end
 
     if AllowMoving then
-      OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
+      OverridePosition, Moving = MoveUI.Enabled(NewRect, OverridePosition)
       if OverridePosition and not Moving then
-          invokeServerFunction('setNewPosition', OverridePosition)
+          MoveUI.AssignPlayerOverride(Title,OverridePosition)
           OverridePosition = nil
       end
 
 
-      drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
+      drawTextRect(Title, NewRect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
       return
     end
 
     if not FactionData then return end
     local Length = #FactionData.OtherFactions
-    if FactionData.Owner then Length = Length + 1 end
+    if FactionData.Owner then Length = Length + 2 end
 
 
-    local HSplit = UIHorizontalMultiSplitter(rect, 0, 0, math.max(Length,0))
+    local HSplit = UIHorizontalMultiSplitter(NewRect, 0, 0, math.max(Length,0))
+    local FontSize = LoadedOptions.FS or 15
 
     if FactionData.Owner then
         local faction = Faction(FactionData.Owner)
-        drawTextRect('Controlled by:', HSplit:partition(0), -1, 0,ColorRGB(1,1,1), 12, 0, 0, 0)
+        drawTextRect('Controlled by:', HSplit:partition(0), -1, 0,ColorRGB(1,1,1), FontSize, 0, 0, 0)
 
         local MainVSplit = UIVerticalSplitter(HSplit:partition(1), 5, 5, 0.80)
         local Name = faction.name:gsub("%/*This refers to factions, such as 'The Xsotan'.", "")
         Name = Name:gsub("%/*", "")
         Name = Name:gsub("%*", "")
-        drawTextRect(Name, MainVSplit.left, 1, 0,ColorRGB(GetRelationColor(FactionData.OwnerRelation)), 12, 0, 0, 0)
-        drawTextRect(FactionData.OwnerLicense, MainVSplit.right,-1, 0,FactionData.OwnerLicenseColor, 10, 0, 0, 0)
+        drawTextRect(Name, MainVSplit.left, 1, 0,ColorRGB(GetRelationColor(FactionData.OwnerRelation)), FontSize, 0, 0, 0)
+        drawTextRect(FactionData.OwnerLicense, MainVSplit.right,-1, 0,FactionData.OwnerLicenseColor, FontSize-2, 0, 0, 0)
     end
 
     if #FactionData.OtherFactions > 0 and LoadedOptions.PF then
-        drawTextRect('Factions in Sector:', HSplit:partition(2), -1, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
+        drawTextRect('Factions in Sector:', HSplit:partition(2), -1, 0,ColorRGB(1,1,1), FontSize-2, 0, 0, 0)
         local i = 3
         for _,factionData in pairs(FactionData.OtherFactions) do
             local faction = Faction(factionData.index)
@@ -156,8 +180,8 @@ function FactionNotifier.onPreRenderHud()
             local Name = faction.name:gsub("%/*This refers to factions, such as 'The Xsotan'.", "")
             Name = Name:gsub("%/*", "")
             Name = Name:gsub("%*", "")
-            drawTextRect(Name, MainVSplit.left,1, 0,ColorRGB(GetRelationColor(factionData.relation)), 10, 0, 0, 0)
-            drawTextRect(factionData.License, MainVSplit.right,-1, 0,factionData.Color, 10, 0, 0, 0)
+            drawTextRect(Name, MainVSplit.left,1, 0,ColorRGB(GetRelationColor(factionData.relation)), FontSize-2, 0, 0, 0)
+            drawTextRect(factionData.License, MainVSplit.right,-1, 0,factionData.Color, FontSize-2, 0, 0, 0)
             i = i + 1
         end
     end
@@ -166,13 +190,16 @@ function FactionNotifier.onPreRenderHud()
 end
 
 function FactionNotifier.updateClient(timeStep)
-  FactionNotifier.detect()
-  LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
-  AllowMoving = MoveUI.AllowedMoving(player)
+    ScanSectorTimer = ScanSectorTimer - timeStep
+    if ScanSectorTimer < 0 then
+        FactionNotifier.detect()
+    end
+  LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function FactionNotifier.getUpdateInterval()
-    return 5
+    return 1
 end
 
 function FactionNotifier.onSectorEntered(playerIndex)
@@ -250,10 +277,6 @@ function GetRarityLicenseName(rarity)
         rtn = 'Illegal'
     end
     return rtn
-end
-
-function FactionNotifier.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
 end
 
 function FactionNotifier.sync(values)

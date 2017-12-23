@@ -47,7 +47,7 @@ function ResourcesUI.onPreRenderHud()
   if AllowMoving then
     OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
     if OverridePosition and not Moving then
-        invokeServerFunction('setNewPosition', OverridePosition)
+        MoveUI.AssignPlayerOverride(Title,OverridePosition)
         OverridePosition = nil
     end
 
@@ -70,15 +70,11 @@ end
 function ResourcesUI.updateClient(timeStep)
   resources = {player:getResources()}
   money = player.money
-  AllowMoving = MoveUI.AllowedMoving(player)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function ResourcesUI.getUpdateInterval()
-    return 5
-end
-
-function ResourcesUI.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
+    return 1
 end
 
 return ResourcesUI

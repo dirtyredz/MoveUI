@@ -101,6 +101,8 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 ## Downloads
 ___
+https://github.com/dirtyredz/MoveUI/releases/download/2.1.0/MoveUI.v2.1.0.zip
+
 https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip
 
 https://github.com/dirtyredz/MoveUI/releases/download/1.3.0/MoveUI.v1.3.0.zip
@@ -116,6 +118,13 @@ https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip
 
 ## Changelog
 ___
+2.1.0
+  --Added PowerSystems UI
+  --Added Notepad UI
+  --Adjusted core moveui to use local data storage, increases client and server performance.
+  --Decreased the amount of space used by FactionNotifier
+  --Dynamic UI's now shrink and grow depending on the individual UI.
+  
 1.4.0
   --Added Clock UI, Thxs  DNightmare
   --Added FactionNotifier UI

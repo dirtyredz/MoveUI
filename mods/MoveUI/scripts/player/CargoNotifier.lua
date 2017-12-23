@@ -34,7 +34,7 @@ function CargoNotifier.initialize(Description)
     DefaulPosition = vec2(res.x * 0.34,res.y * 0.07)
     rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
 
-    LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+    LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
 
     local PlayerShip = player.craft
     if not PlayerShip then return end
@@ -71,14 +71,14 @@ function CargoNotifier.buildTab(tabbedWindow)
 end
 
 function CargoNotifier.onAllowFlashing(checkbox, value)
-  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
-  invokeServerFunction('setNewOptions', Title, {AF = value},Player().index)
+  MoveUI.SetVariable(Title.."_Opt", {AF = value})
 end
 
 --Executed when the Main UI Interface is opened.
 function CargoNotifier.onShowWindow()
   --Get the player options
-  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+
   --Set the checkbox to match the option
   AF_OnOff.checked = LoadedOptions.AF
 end
@@ -100,7 +100,7 @@ function CargoNotifier.onPreRenderHud()
     if AllowMoving then
       OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
       if OverridePosition and not Moving then
-          invokeServerFunction('setNewPosition', OverridePosition)
+          MoveUI.AssignPlayerOverride(Title,OverridePosition)
           OverridePosition = nil
       end
 
@@ -141,19 +141,16 @@ function CargoNotifier.onPreRenderHud()
 end
 
 function CargoNotifier.updateClient(timeStep)
-  LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+  --LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
   local PlayerShip = player.craft
   if not PlayerShip then return end
   Cargos = PlayerShip:getCargos()
-  AllowMoving = MoveUI.AllowedMoving(player)
+  AllowMoving = MoveUI.AllowedMoving()
 end
 
 function CargoNotifier.getUpdateInterval()
-    return 5
-end
-
-function CargoNotifier.setNewPosition(Position)
-  MoveUI.AssignPlayerOverride(Player(),Title,Position)
+    return 1
 end
 
 return CargoNotifier

@@ -63,7 +63,7 @@ function ScrapyardLicenses.buildTab(tabbedWindow)
 
   local Description = container:createTextField(TopHSplit.bottom, Description)
 
-  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 2)
+  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 5)
 
   local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
   local name = container:createLabel(TextVSplit.left.lower, "Show Both", 16)
@@ -75,7 +75,7 @@ function ScrapyardLicenses.buildTab(tabbedWindow)
   local name = container:createLabel(TextVSplit.left.lower, "Clickable", 16)
   --make sure variables are local to this file only
   Clickable_OnOff = container:createCheckBox(TextVSplit.right, "On / Off", 'onClickable')
-  Clickable_OnOff.tooltip = 'Allows you to click the UIs shown licenses. (can cause higher ping rates)'
+  Clickable_OnOff.tooltip = 'Allows you to click the UIs shown licenses.'
 
   local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(2),0, 5,0.65)
   local name = container:createLabel(TextVSplit.left.lower, "Clear Licenses", 16)
@@ -88,19 +88,19 @@ function ScrapyardLicenses.buildTab(tabbedWindow)
 end
 
 function ScrapyardLicenses.onShowBoth(checkbox, value)
-  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
-  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
-  invokeServerFunction('setNewOptions', Title, {Both = value, Clickable = LoadedOptions.Clickable},Player().index)
+
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  --invokeServerFunction('setNewOptions', Title, {Both = value, Clickable = LoadedOptions.Clickable},Player().index)
+  MoveUI.SetVariable(Title.."_Opt", {Both = value, Clickable = LoadedOptions.Clickable})
 end
 
 function ScrapyardLicenses.onClickable(checkbox, value)
-  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
-  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
-  invokeServerFunction('setNewOptions', Title, {Both = LoadedOptions.Both, Clickable = value},Player().index)
+
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  MoveUI.SetVariable(Title.."_Opt", {Both = LoadedOptions.Both, Clickable = value})
 end
 
 function ScrapyardLicenses.onClear()
-  --setNewOptions is a function inside entity/MoveUI.lua, that sets the options to the player.
   invokeServerFunction('clearValue',Entity(Player().craftIndex).factionIndex,"MoveUI#Licenses",Player().index)
   invokeServerFunction('clearValue',Player().index,"MoveUI#Licenses",Player().index)
 end
@@ -108,7 +108,7 @@ end
 --Executed when the Main UI Interface is opened.
 function ScrapyardLicenses.onShowWindow()
   --Get the player options
-  local LoadedOptions = MoveUI.GetOptions(Player(),Title,DefaultOptions)
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
   --Set the checkbox to match the option
   Both_OnOff.checked = LoadedOptions.Both
   Clickable_OnOff.checked = LoadedOptions.Clickable
@@ -134,7 +134,7 @@ function ScrapyardLicenses.onPreRenderHud()
         if AllowMoving then
           OverridePosition, Moving = MoveUI.Enabled(rect, OverridePosition)
           if OverridePosition and not Moving then
-              invokeServerFunction('setNewPosition', OverridePosition)
+              MoveUI.AssignPlayerOverride(Title,OverridePosition)
               OverridePosition = nil
           end
 
@@ -162,7 +162,7 @@ function ScrapyardLicenses.onPreRenderHud()
         local PlayerLicensesSize = ScrapyardLicenses.TableSize(PlayerValues)
 
 
-        local LoadedOptions = MoveUI.GetOptions(player,Title,DefaultOptions)
+        local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
         local showBoth = LoadedOptions.Both
         local Clickable = LoadedOptions.Clickable
 
@@ -234,6 +234,8 @@ function ScrapyardLicenses.onPreRenderHud()
 end
 
 function ScrapyardLicenses.updateClient(timeStep)
+  AllowMoving = MoveUI.AllowedMoving()
+
   local lx, ly = Sector():getCoordinates()
   if PlayerValues[lx] then
     if PlayerValues[lx][ly] then
@@ -263,17 +265,11 @@ function ScrapyardLicenses.updateClient(timeStep)
 
     ScrapyardLicenses.GetFactionValues(player.allianceIndex,player.index)
     ScrapyardLicenses.sync()
-
-    AllowMoving = MoveUI.AllowedMoving(player)
   end
 end
 
 function ScrapyardLicenses.getUpdateInterval()
     return 1
-end
-
-function ScrapyardLicenses.setNewPosition(Position)
-    MoveUI.AssignPlayerOverride(Player(), Title, Position)
 end
 
 function ScrapyardLicenses.GetFactionValues(allianceIndex,playerIndex)
@@ -331,6 +327,8 @@ end
 
 function ScrapyardLicenses.onSectorEntered(playerIndex,x,y)
   local player = Player()
+  --Verify Entity Exsist
+  if not Sector():getEntity(player.craftIndex) then return end
   local playerShip = Entity(player.craftIndex)
 
   local ShipFaction
