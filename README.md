@@ -77,6 +77,13 @@ Simple UI to display your computers current time.
 
 SPECIAL THANKS AND CREDIT: dnightmare
 
+## PowerSystems
+A simple UI that displays additional details about your power systems.
+
+## Notepad
+A UI that displays notes added via the MoveUI Menu.
+
+
 ## INSTALLATION
 ___
 1. Download the zip file
@@ -124,7 +131,7 @@ ___
   --Adjusted core moveui to use local data storage, increases client and server performance.
   --Decreased the amount of space used by FactionNotifier
   --Dynamic UI's now shrink and grow depending on the individual UI.
-  
+
 1.4.0
   --Added Clock UI, Thxs  DNightmare
   --Added FactionNotifier UI

@@ -76,6 +76,11 @@ Simple UI to display your computers current time.
 
 SPECIAL THANKS AND CREDIT: dnightmare
 
+[center][b][size=25pt]PowerSystems[/size][/b][/center]
+A simple UI that displays additional details about your power systems.
+
+[center][b][size=25pt]Notepad[/size][/b][/center]
+A UI that displays notes added via the MoveUI Menu.
 
 [b][size=24pt]INSTALLATION[/size][/b]
 [hr]
