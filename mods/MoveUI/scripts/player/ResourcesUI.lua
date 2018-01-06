@@ -122,7 +122,6 @@ function ResourcesUI.getUpdateInterval()
 end
 
 function updateResourcesInfo()
-      print("LoadedOptions.sa: ",LoadedOptions.SA)
   local allegiance = player.allianceIndex 
   if LoadedOptions.SA and allegiance then
     local a = Alliance(allegiance)
