@@ -102,12 +102,20 @@ function ResourcesUI.onPreRenderHud()
 
   local HSplit = UIHorizontalMultiSplitter(rect, 10, 10, 7)
 
-  drawTextRect('Credits', HSplit:partition(0),-1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
-  drawTextRect(MoveUI.NicerNumbers(money), HSplit:partition(0),1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
-
-  for i = 0, 6 do
-    drawTextRect(Material(i).name, HSplit:partition(i+1),-1, 0,Material(i).color, 15, 0, 0, 0)
-    drawTextRect(MoveUI.NicerNumbers(resources[i+1]), HSplit:partition(i+1),1, 0,Material(i).color, 15, 0, 0, 0)
+  if LoadedOptions.SA then
+    drawTextRect('[A] Credits', HSplit:partition(0),-1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
+    drawTextRect(MoveUI.NicerNumbers(money), HSplit:partition(0),1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
+    for i = 0, 6 do
+      drawTextRect("[A] " .. Material(i).name, HSplit:partition(i+1),-1, 0,Material(i).color, 15, 0, 0, 0)
+      drawTextRect(MoveUI.NicerNumbers(resources[i+1]), HSplit:partition(i+1),1, 0,Material(i).color, 15, 0, 0, 0)
+    end
+  else
+    drawTextRect('Credits', HSplit:partition(0),-1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
+    drawTextRect(MoveUI.NicerNumbers(money), HSplit:partition(0),1, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
+    for i = 0, 6 do
+      drawTextRect(Material(i).name, HSplit:partition(i+1),-1, 0,Material(i).color, 15, 0, 0, 0)
+      drawTextRect(MoveUI.NicerNumbers(resources[i+1]), HSplit:partition(i+1),1, 0,Material(i).color, 15, 0, 0, 0)
+    end
   end
 end
 
@@ -122,6 +130,7 @@ function ResourcesUI.getUpdateInterval()
 end
 
 function updateResourcesInfo()
+  
   local allegiance = player.allianceIndex 
   if LoadedOptions.SA and allegiance then
     local a = Alliance(allegiance)
