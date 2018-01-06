@@ -1,4 +1,5 @@
 --MoveUI - Dirtyredz|David McClain
+--Tsunder wuz here
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 local MoveUI = require('MoveUI')
 
@@ -8,8 +9,13 @@ ResourcesUI = {}
 local OverridePosition
 
 local Title = 'ResourcesUI'
-local Icon = "data/textures/icons/brick-pile.png"
-local Description = "Shows all your resources."
+local Icon = "data/textures/icons/metal-bar.png"
+local Description = "Shows all your, or your alliance's, resources."
+local DefaultOptions = {
+  SA = true
+}
+local ShowAlliance
+
 local rect
 local res
 local DefaulPosition
@@ -21,7 +27,8 @@ local player
 function ResourcesUI.initialize()
   if onClient() then
     player = Player()
-
+    LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+    ShowAlliance = LoadedOptions.SA
     player:registerCallback("onPreRenderHud", "onPreRenderHud")
 
     rect = Rect(vec2(),vec2(300,155))
@@ -30,12 +37,49 @@ function ResourcesUI.initialize()
     DefaulPosition = vec2(res.x * 0.92,res.y * 0.68)
     rect.position = MoveUI.CheckOverride(player,DefaulPosition,OverridePosition,Title)
 
-    resources = {player:getResources()}
-    money = player.money
+    updateResourcesInfo()
   end
 end
 
 function ResourcesUI.buildTab(tabbedWindow)
+  local FileTab = tabbedWindow:createTab("", Icon, Title)
+  local container = FileTab:createContainer(Rect(vec2(0, 0), FileTab.size));
+
+  --split it 50/50
+  local mainSplit = UIHorizontalSplitter(Rect(vec2(0, 0), FileTab.size), 0, 0, 0.5)
+
+  --Top Message
+  local TopHSplit = UIHorizontalSplitter(mainSplit.top, 0, 0, 0.3)
+  local TopMessage = container:createLabel(TopHSplit.top.lower + vec2(10,10), Title, 16)
+  TopMessage.centered = 1
+  TopMessage.size = vec2(FileTab.size.x - 40, 20)
+
+  local Description = container:createTextField(TopHSplit.bottom, Description)
+
+  local OptionsSplit = UIHorizontalMultiSplitter(mainSplit.bottom, 0, 0, 1)
+
+  local TextVSplit = UIVerticalSplitter(OptionsSplit:partition(0),0, 5,0.65)
+  local name = container:createLabel(TextVSplit.left.lower, "Show Alliance", 16)
+
+  --make sure variables are local to this file only
+  ShowAlliance = container:createCheckBox(TextVSplit.right, "On / Off", 'onShowAlliance')
+  ShowAlliance.tooltip = 'Show Alliance resources instead of player resources.'
+
+  --Pass the name of the function, and the checkbox
+  return {checkbox = {onShowAlliance = ShowAlliance}, button = {}}
+end
+
+--Executed when the Main UI Interface is opened.
+function ResourcesUI.onShowWindow()
+  --Get the player options
+  local LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
+  --Set the checkbox to match the option
+  ShowAlliance.checked = LoadedOptions.SA
+end
+
+
+function ResourcesUI.onShowAlliance(checkbox, value)
+  MoveUI.SetVariable(Title.."_Opt", {SA = value})
 end
 
 function ResourcesUI.onPreRenderHud()
@@ -68,13 +112,26 @@ function ResourcesUI.onPreRenderHud()
 end
 
 function ResourcesUI.updateClient(timeStep)
-  resources = {player:getResources()}
-  money = player.money
+  updateResourcesInfo()
+  LoadedOptions = MoveUI.GetVariable(Title.."_Opt",DefaultOptions)
   AllowMoving = MoveUI.AllowedMoving()
 end
 
 function ResourcesUI.getUpdateInterval()
     return 1
+end
+
+function updateResourcesInfo()
+      print("LoadedOptions.sa: ",LoadedOptions.SA)
+  local allegiance = player.allianceIndex 
+  if LoadedOptions.SA and allegiance then
+    local a = Alliance(allegiance)
+    resources = {a:getResources()}
+    money = a.money
+  else 
+    resources = {player:getResources()}
+    money = player.money
+  end
 end
 
 return ResourcesUI
