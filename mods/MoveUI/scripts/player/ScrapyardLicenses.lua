@@ -125,7 +125,7 @@ function ScrapyardLicenses.TableSize(tabl)
 end
 
 function ScrapyardLicenses.onPreRenderHud()
-    if onClient() then
+    if onClient() and Player() then
 
         if OverridePosition then
           rect.position = OverridePosition
