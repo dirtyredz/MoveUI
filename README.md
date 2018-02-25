@@ -88,6 +88,11 @@ A UI that displays notes added via the MoveUI Menu.
 ___
 1. Download the zip file
 2. Drag and Drop the contents into the /Avorion/ directory,
+    File structure:
+        /avorion
+            |---->/data
+            |---->/mods
+                   |---->/MoveUI
 
 3. Place this line at the bottom of this file: data/scripts/entity/merchants/scrapyard.lua
 
@@ -108,6 +113,8 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 ## Downloads
 ___
+https://github.com/dirtyredz/MoveUI/releases/download/2.1.1/MoveUI.v2.1.1.zip
+
 https://github.com/dirtyredz/MoveUI/releases/download/2.1.0/MoveUI.v2.1.0.zip
 
 https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip
@@ -125,6 +132,10 @@ https://github.com/dirtyredz/MoveUI/releases/download/1.0.0/MoveUI.v1.0.0.zip
 
 ## Changelog
 ___
+2.1.1
+  --Fixed bug in PowerSystems
+  --Changed how Clock UI gets current time
+
 2.1.0
   --Added PowerSystems UI
   --Added Notepad UI

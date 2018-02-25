@@ -101,6 +101,7 @@ function PowerSystems.onPreRenderHud()
   end
 
   local HSplit = UIHorizontalMultiSplitter(NewRect, 20, 5, 5)
+  if not player.craftIndex then return end
   local ES = ReadOnlyEnergySystem(player.craftIndex)
   if not ES then return end
   local FontSize = LoadedOptions.FS or 15

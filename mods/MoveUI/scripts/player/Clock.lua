@@ -13,12 +13,8 @@ local Description = "Oh no, it's morning again :)"
 local rect
 local res
 local defaultPosition
-local currentDate
-local currentTime = ''
-local date
 local AllowMoving
 local player
-
 
 function Clock.initialize()
   if onClient() then
@@ -32,17 +28,11 @@ function Clock.initialize()
     --MoveUI - Dirtyredz|David McClain
     defaultPosition = vec2(res.x * 0.7,res.y * 0.07)
     rect.position = MoveUI.CheckOverride(player, defaultPosition,OverridePosition,Title)
-    Clock.getCurrentDate()
   end
 end
 
 function Clock.buildTab(tabbedWindow)
   -- TODO: add alarm settings in here
-end
-
-
-function Clock.onSectorEntered()
-  Clock.getCurrentDate() -- sync time with server on sector change
 end
 
 function Clock.onPreRenderHud()
@@ -59,41 +49,11 @@ function Clock.onPreRenderHud()
     drawTextRect(Title, rect, 0, 0,ColorRGB(1,1,1), 10, 0, 0, 0)
     return
   end
-
-  drawTextRect(currentTime, rect,0, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
-end
-
-function Clock.getCurrentDate(date)
-  if onClient() then
-    if date then
-      currentDate = date
-      return
-    end
-    invokeServerFunction('getCurrentDate')
-    return
-  end
-
-  local cDate = os.date ("*t")
-  invokeClientFunction(Player(callingPlayer),'getCurrentDate', cDate)
+  local DateTime = os.date("*t")
+  drawTextRect(DateTime.hour..":"..DateTime.min..":"..DateTime.sec, rect,0, 0,ColorRGB(1,1,1), 15, 0, 0, 0)
 end
 
 function Clock.updateClient(timeStep)
-  if currentDate then
-    currentDate.sec = math.floor(currentDate.sec + timeStep)
-    if currentDate.sec >= 60 then
-      currentDate.sec = 0
-      currentDate.min = currentDate.min + 1
-      if currentDate.min >= 60 then
-        currentDate.min = 0
-        currentDate.hours = currentDate.hour + 1
-        -- TODO: add 12/24hr support
-        if currentDate.hour >= 24 then
-          currentDate.hour = 0
-        end
-      end
-    end
-    currentTime = string.format("%02d:%02d:%02d", currentDate.hour, currentDate.min, currentDate.sec)
-  end
   AllowMoving = MoveUI.AllowedMoving()
 end
 

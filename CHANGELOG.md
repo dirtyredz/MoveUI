@@ -1,9 +1,20 @@
+2.1.1
+  --Fixed bug in PowerSystems
+  --Changed how Clock UI gets current time
+  
+2.1.0
+  --Added PowerSystems UI
+  --Added Notepad UI
+  --Adjusted core moveui to use local data storage, increases client and server performance.
+  --Decreased the amount of space used by FactionNotifier
+  --Dynamic UI's now shrink and grow depending on the individual UI.
+
 1.4.0
   --Added Clock UI, Thxs  DNightmare
   --Added FactionNotifier UI
   --Added ability to delete scrapyard licenses data from the UI
   --Removed Vanilla files from zip, follow installation instructions please
-  
+
 1.3.0
   --Every UI now utilizes delayed server/client communication
       Will help tremendously with any high ping issues.

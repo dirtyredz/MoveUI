@@ -130,13 +130,12 @@ function ResourcesUI.getUpdateInterval()
 end
 
 function updateResourcesInfo()
-  
-  local allegiance = player.allianceIndex 
+  local allegiance = player.allianceIndex
   if LoadedOptions.SA and allegiance then
     local a = Alliance(allegiance)
     resources = {a:getResources()}
     money = a.money
-  else 
+  else
     resources = {player:getResources()}
     money = player.money
   end

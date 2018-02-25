@@ -86,6 +86,12 @@ A UI that displays notes added via the MoveUI Menu.
 [hr]
 1. Download the zip file
 2. Drag and Drop the contents into the /Avorion/ directory,
+    File structure:
+        /avorion
+            |---->/data
+            |---->/mods
+                   |---->/MoveUI
+
 
 3. Place this line at the bottom of this file: data/scripts/entity/merchants/scrapyard.lua
     [code]if not pcall(require, 'mods.MoveUI.scripts.entity.merchants.scrapyard') then print('Mod: MoveUI, failed to extend scrapyard.lua!') end[/code]
@@ -106,10 +112,12 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.0/MoveUI.v2.1.0.zip]MoveUI v2.1.0[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.1/MoveUI.v2.1.1.zip]MoveUI v2.1.1[/url]
 
 Older Downloads
 [spoiler]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.0/MoveUI.v2.1.0.zip]MoveUI v2.1.0[/url]
+
 [url=https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip]MoveUI v1.4.0[/url]
 
 [url=https://github.com/dirtyredz/MoveUI/releases/download/1.3.0/MoveUI.v1.3.0.zip]MoveUI v1.3.0[/url]
@@ -125,6 +133,10 @@ Older Downloads
 
 [b][size=24pt]Changelog[/size][/b]
 [hr]
+2.1.1
+  --Fixed bug in PowerSystems
+  --Changed how Clock UI gets current time
+
 2.1.0
   --Added PowerSystems UI
   --Added Notepad UI
