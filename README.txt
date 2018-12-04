@@ -112,7 +112,7 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/2.2.0/MoveUI.v2.2.0.zip]MoveUI v2.2.0[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/v2.2.0/MoveUI.v2.2.0.zip]MoveUI v2.2.0[/url]
 
 Older Downloads
 [spoiler]

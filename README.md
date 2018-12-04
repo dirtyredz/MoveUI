@@ -113,7 +113,7 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 ## Downloads
 ___
-https://github.com/dirtyredz/MoveUI/releases/download/2.2.0/MoveUI.v2.2.0.zip
+https://github.com/dirtyredz/MoveUI/releases/download/v2.2.0/MoveUI.v2.2.0.zip
 
 https://github.com/dirtyredz/MoveUI/releases/download/2.1.1/MoveUI.v2.1.1.zip
 
