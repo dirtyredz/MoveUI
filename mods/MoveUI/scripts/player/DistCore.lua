@@ -1,4 +1,7 @@
 --MoveUI - Dirtyredz|David McClain
+package.path = package.path .. ";data/scripts/lib/?.lua"
+require ("callable")
+
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 local MoveUI = require('MoveUI')
 
@@ -102,6 +105,7 @@ function DistCore.GetDistance(Distance)
   distanceFromCenter =  math.floor(length(vec2(lx,ly)))
   invokeClientFunction(Player(callingPlayer),'GetDistance',distanceFromCenter)
 end
+callable(DistCore, "GetDistance")
 
 function DistCore.updateClient(timeStep)
   AllowMoving = MoveUI.AllowedMoving()

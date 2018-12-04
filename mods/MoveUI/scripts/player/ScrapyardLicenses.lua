@@ -1,6 +1,7 @@
 --MoveUI - Dirtyredz|David McClain
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 package.path = package.path .. ";data/scripts/lib/?.lua"
+require ("callable")
 
 local MoveUI = require('MoveUI')
 require ("utility")
@@ -298,6 +299,7 @@ function ScrapyardLicenses.GetFactionValues(allianceIndex,playerIndex)
     end
   end
 end
+callable(ScrapyardLicenses, "GetFactionValues")
 
 function ScrapyardLicenses.SetFactionValues(allianceIndex,allianceLicenses,playerLicenses)
   if onClient() then
@@ -311,6 +313,7 @@ function ScrapyardLicenses.SetFactionValues(allianceIndex,allianceLicenses,playe
   end
   Player():setValue("MoveUI#Licenses", MoveUI.Serialize(playerLicenses))
 end
+callable(ScrapyardLicenses, "SetFactionValues")
 
 function ScrapyardLicenses.sync(values)
   if onClient() then
@@ -324,6 +327,7 @@ function ScrapyardLicenses.sync(values)
   end
   invokeClientFunction(Player(callingPlayer),'sync',{AllianceValues = AllianceValues, PlayerValues = PlayerValues})
 end
+callable(ScrapyardLicenses, "sync")
 
 function ScrapyardLicenses.onSectorEntered(playerIndex,x,y)
   local player = Player()

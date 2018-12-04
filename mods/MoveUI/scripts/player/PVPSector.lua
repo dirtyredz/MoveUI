@@ -1,7 +1,8 @@
 --MoveUI - Dirtyredz|David McClain
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 local MoveUI = require('MoveUI')
-
+package.path = package.path .. ";data/scripts/lib/?.lua"
+require ("callable")
 -- namespace PVPSector
 PVPSector = {}
 
@@ -87,6 +88,7 @@ function PVPSector.GetPVPStatus(Message)
   end
   invokeClientFunction(Player(callingPlayer),'GetPVPStatus',PVPMessage)
 end
+callable(PVPSector, "GetPVPStatus")
 
 function PVPSector.updateClient(timeStep)
   AllowMoving = MoveUI.AllowedMoving()
