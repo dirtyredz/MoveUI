@@ -1,0 +1,27 @@
+{
+  "name": "moveui",
+  "version": "2.2.0",
+  "description": "An Avorion game modification, that provides additional UI's.",
+  "main": "package.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "package": "node package.js",
+    "release": "release-it 1.5.1 --no-npm.publish"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dirtyredz/MoveUI.git"
+  },
+  "author": "DigitalRedz | David McClain (Dirtyredz)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dirtyredz/MoveUI/issues"
+  },
+  "homepage": "https://github.com/dirtyredz/MoveUI#readme",
+  "devDependencies": {
+    "archiver": "^3.0.0",
+    "del": "^3.0.0",
+    "fs": "0.0.1-security",
+    "release-it": "^8.2.0"
+  }
+}
