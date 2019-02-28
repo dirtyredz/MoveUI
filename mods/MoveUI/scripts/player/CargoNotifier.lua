@@ -8,7 +8,7 @@ CargoNotifier = {}
 local OverridePosition
 
 local Title = 'CargoNotifier'
-local Icon = "data/textures/icons/wooden-crate.png"
+local Icon = "data/textures/icons/crate.png"
 local Description = "Displays warning if you have Dangerous, Stolen, Suspicious, or Illegal Cargo"
 local DefaultOptions = {
   AF = false

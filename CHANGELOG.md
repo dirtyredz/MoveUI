@@ -1,7 +1,11 @@
+2.2.0
+  --Added Callable support
+  --Added 12/24 option to clock UI
+
 2.1.1
   --Fixed bug in PowerSystems
   --Changed how Clock UI gets current time
-  
+
 2.1.0
   --Added PowerSystems UI
   --Added Notepad UI

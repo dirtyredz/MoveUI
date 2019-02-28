@@ -112,10 +112,12 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.1/MoveUI.v2.1.1.zip]MoveUI v2.1.1[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/2.2.0/MoveUI.v2.2.0.zip]MoveUI v2.2.0[/url]
 
 Older Downloads
 [spoiler]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.1/MoveUI.v2.1.1.zip]MoveUI v2.1.1[/url]
+
 [url=https://github.com/dirtyredz/MoveUI/releases/download/2.1.0/MoveUI.v2.1.0.zip]MoveUI v2.1.0[/url]
 
 [url=https://github.com/dirtyredz/MoveUI/releases/download/1.4.0/MoveUI.v1.4.0.zip]MoveUI v1.4.0[/url]
@@ -133,6 +135,10 @@ Older Downloads
 
 [b][size=24pt]Changelog[/size][/b]
 [hr]
+2.2.0
+  --Added Callable support
+  --Added 12/24 option to clock UI
+
 2.1.1
   --Fixed bug in PowerSystems
   --Changed how Clock UI gets current time

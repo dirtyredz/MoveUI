@@ -1,6 +1,7 @@
 package.path = package.path .. ";data/scripts/lib/?.lua"
 require ("stringutility")
 require ("utility")
+require ("callable")
 
 package.path = package.path .. ";mods/MoveUI/scripts/lib/?.lua"
 local MoveUI = require('MoveUI')
@@ -179,6 +180,8 @@ function MoveUIOptions.onAllowUIMovement(checkbox, value)
     end
     Player(callingPlayer):setValue('MoveUI',nil)
 end
+callable(MoveUIOptions, "onAllowUIMovement")
+
 
 function MoveUIOptions.onEnableUI(checkbox, value, hudIndex)
     if onClient() then
@@ -205,3 +208,4 @@ function MoveUIOptions.onEnableUI(checkbox, value, hudIndex)
     end
     player:removeScript("mods/MoveUI/scripts/player/"..hudOptions.FileName..".lua")
 end
+callable(MoveUIOptions, "onEnableUI")

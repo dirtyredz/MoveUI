@@ -5,7 +5,7 @@ local MoveUI = require('MoveUI')
 package.path = package.path .. ";data/scripts/lib/?.lua"
 FactionsMap = require ("factionsmap")
 require ("stringutility")
-
+require ("callable")
 
 -- namespace FactionNotifier
 FactionNotifier = {}
@@ -13,7 +13,7 @@ FactionNotifier = {}
 local OverridePosition
 
 local Title = 'FactionNotifier'
-local Icon = "data/textures/icons/freedom-dove.png"
+local Icon = "data/textures/icons/morale.png"
 local Description = "Will display details of the owning faction of your current sector."
 local DefaultOptions = {
   PF = true,
@@ -264,6 +264,7 @@ function FactionNotifier.detect()
 
   FactionNotifier.sync()
 end
+callable(FactionNotifier, "detect")
 
 function GetRarityLicenseName(rarity)
     local rtn = ''
@@ -290,6 +291,7 @@ function FactionNotifier.sync(values)
 
   invokeClientFunction(Player(), 'sync', {FactionData = FactionData})
 end
+callable(FactionNotifier, "sync")
 
 function GetRelationColor(relation)
     for _,RC in pairs(RelationColors) do
