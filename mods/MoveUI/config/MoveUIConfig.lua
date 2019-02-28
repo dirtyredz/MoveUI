@@ -3,7 +3,7 @@ MoveUIConfig.Author = "Dirtyredz"
 MoveUIConfig.ModName = "[MoveUI]"
 
 MoveUIConfig.version = {
-    major=2, minor=2, patch = 0,
+    major=2, minor=2, patch = 1,
     string = function()
         return  Config.version.major .. '.' ..
                 Config.version.minor .. '.' ..

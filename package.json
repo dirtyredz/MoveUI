@@ -1,12 +1,12 @@
 {
   "name": "moveui",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "description": "An Avorion game modification, that provides additional UI's.",
   "main": "package.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "package": "node package.js",
-    "release": "release-it 2.2.0 --no-npm.publish"
+    "release": "release-it 2.2.1 --no-npm.publish"
   },
   "repository": {
     "type": "git",
