@@ -314,6 +314,7 @@ function ScrapyardLicenses.SetFactionValues(allianceIndex,allianceLicenses,playe
   end
   Player():setValue("MoveUI#Licenses", MoveUI.Serialize(playerLicenses))
 end
+callable(ScrapyardLicenses, "SetFactionValues")
 
 function ScrapyardLicenses.sync(values)
   if onClient() then

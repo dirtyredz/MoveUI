@@ -1,6 +1,5 @@
 2.2.0
-  --Added Callable support
-  --Added 12/24 option to clock UI
+  --Support for 0.20 security update
 
 2.1.1
   --Fixed bug in PowerSystems

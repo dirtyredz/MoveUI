@@ -88,7 +88,7 @@ A UI that displays notes added via the MoveUI Menu.
 2. Drag and Drop the contents into the /Avorion/ directory,
     File structure:
         /avorion
-            |---->/data
+            |---->/data (do not place inside this directory)
             |---->/mods
                    |---->/MoveUI
 
@@ -112,7 +112,7 @@ I encourage all modders to adopt this file structure as default, as its likely t
 
 [b][size=24pt]Downloads[/size][/b]
 [hr]
-[url=https://github.com/dirtyredz/MoveUI/releases/download/2.2.0/MoveUI.v2.2.0.zip]MoveUI v2.2.0[/url]
+[url=https://github.com/dirtyredz/MoveUI/releases/download/v2.2.0/MoveUI.v2.2.0.zip]MoveUI v2.2.0[/url]
 
 Older Downloads
 [spoiler]
@@ -136,8 +136,7 @@ Older Downloads
 [b][size=24pt]Changelog[/size][/b]
 [hr]
 2.2.0
-  --Added Callable support
-  --Added 12/24 option to clock UI
+  --Support for 0.20 security update
 
 2.1.1
   --Fixed bug in PowerSystems

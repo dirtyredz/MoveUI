@@ -226,7 +226,6 @@ function FactionNotifier.detect()
       end
   end
 
-
   FactionData = {}
   FactionData.Owner = Owner
   if not Faction(Owner) then FactionData.Owner = nil end

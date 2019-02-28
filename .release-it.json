@@ -1,0 +1,11 @@
+{
+  "src": {
+    "tagName": "v${version}"
+  },
+  "increment": "conventional:angular",
+
+  "github": {
+    "release": true,
+    "assets": ["*.zip"]
+  }
+}

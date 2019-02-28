@@ -107,7 +107,6 @@ function DistCore.GetDistance(Distance)
 end
 callable(DistCore, "GetDistance")
 
-
 function DistCore.updateClient(timeStep)
   AllowMoving = MoveUI.AllowedMoving()
 end

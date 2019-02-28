@@ -182,7 +182,6 @@ function MoveUIOptions.onAllowUIMovement(checkbox, value)
 end
 callable(MoveUIOptions, "onAllowUIMovement")
 
-
 function MoveUIOptions.onEnableUI(checkbox, value, hudIndex)
     if onClient() then
       local hudIndex = 0
